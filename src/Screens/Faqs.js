@@ -9,37 +9,22 @@ import {
 } from 'react-native';
 import Backbtn from '../Components/Button/Backbtn';
 import {Colors} from '../Theme/Color';
+import {apicaller} from '../Components/ApiCaller/Api';
 
 const Faqs = () => {
   const [show, setShow] = useState(false);
   const [idcheck, setIdcheck] = useState('');
-
-  const data = [
-    {
-      id: '1',
-      head: 'What is Lorem Ipsum?',
-      title:
-        ' Lorem Ipsum is simply dummy text of the printing and typesetting industry orem Ipsum is simply dummy text of the printing and typesetting industry orem Ipsum is simply dummy text of the printing and typesetting industry . ',
-    },
-    {
-      id: '2',
-      head: 'What is Lorem Ipsum?',
-      title:
-        ' Lorem Ipsum is simply dummy text of the printing and typesetting industry orem Ipsum is simply dummy text of the printing and typesetting industry .',
-    },
-    {
-      id: '3',
-      head: 'What is Lorem Ipsum?',
-      title:
-        ' Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
-    },
-    {
-      id: '4',
-      head: 'What is Lorem Ipsum?',
-      title:
-        ' Lorem Ipsum is simply dummy text of the printing and typesetting industry orem Ipsum is simply dummy text of the printing and typesetting industry orem Ipsum is simply dummy text of the printing and typesetting industry .',
-    },
-  ];
+  const [data, setData] = useState([]);
+  useEffect(() => {
+    apicaller(`/faq`, null, 'get', null)
+      .then(function (response) {
+        console.log(JSON.stringify(response.data.result));
+        setData(response.data.result);
+      })
+      .catch(function (error) {
+        console.log(error.response.data);
+      });
+  }, []);
 
   return (
     <ImageBackground
@@ -66,16 +51,16 @@ const Faqs = () => {
                 <TouchableOpacity
                   style={styles.btn1}
                   onPress={() => {
-                    setShow(true), setIdcheck(item.id);
-                    if (idcheck == item.id) {
+                    setShow(true), setIdcheck(item._id);
+                    if (idcheck == item._id) {
                       setShow(false);
                       setIdcheck('0');
                     }
                   }}>
-                  <Text style={styles.maintxt}>{item.head}</Text>
+                  <Text style={styles.maintxt}>{item.question}</Text>
                 </TouchableOpacity>
-                {show && idcheck == item.id && (
-                  <Text style={styles.infotxt}>{item.title}</Text>
+                {show && idcheck == item._id && (
+                  <Text style={styles.infotxt}>{item.answer}</Text>
                 )}
               </>
             );

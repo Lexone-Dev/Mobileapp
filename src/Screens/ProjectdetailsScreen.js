@@ -152,13 +152,13 @@ const Projectdetails = ({navigation}) => {
         <Bidlist />
         <Bidlist />
       </ScrollView>
-      <TouchableOpacity
+      {/* <TouchableOpacity
         onPress={() => {
           setModalshow(!modalshow);
         }}>
         <MainBtn title={'Bid Now'} />
-      </TouchableOpacity>
-      <View
+      </TouchableOpacity> */}
+      {/* <View
         style={{
           backgroundColor: 'white',
           position: 'absolute',
@@ -268,7 +268,7 @@ const Projectdetails = ({navigation}) => {
             </View>
           </View>
         </Modal>
-      </View>
+      </View> */}
     </ImageBackground>
   );
 };

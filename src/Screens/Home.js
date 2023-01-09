@@ -1,5 +1,4 @@
-import {BlurView, VibrancyView} from '@react-native-community/blur';
-import React from 'react';
+import {useState, useEffect} from 'react';
 import {
   SafeAreaView,
   View,
@@ -16,8 +15,21 @@ import Liveauction from '../Components/BoxLayout/LiveAuctionbox';
 import Upcomingbox from '../Components/BoxLayout/Upcomingbox';
 import {Colors} from '../Theme/Color';
 import LinearGradient from 'react-native-linear-gradient';
+import {apicaller} from '../Components/ApiCaller/Api';
 
 const Home = ({navigation}) => {
+  const [data, setData] = useState([]);
+  useEffect(() => {
+    apicaller(`banner`, null, 'get', null)
+      .then(function (response) {
+        console.log(JSON.stringify(response.data.result));
+        setData(response.data.result);
+      })
+      .catch(function (error) {
+        console.log(error.response.data);
+      });
+  }, []);
+
   return (
     <ImageBackground
       style={styles.Image}
@@ -46,7 +58,16 @@ const Home = ({navigation}) => {
         <ScrollView
           horizontal={true}
           style={{marginVertical: 30, marginHorizontal: 20}}>
-          <LinearGradient style={styles.img2} colors={['#fffcfc', '#6C7C87']}>
+          {data.map(item => {
+            return (
+              <LinearGradient
+                style={styles.img2}
+                colors={['#fffcfc', '#6C7C87']}>
+                <Image source={{uri: item.image}} style={styles.img1} />
+              </LinearGradient>
+            );
+          })}
+          {/* <LinearGradient style={styles.img2} colors={['#fffcfc', '#6C7C87']}>
             <Image
               source={require('../Assets/Image/Banner.png')}
               style={styles.img1}
@@ -63,25 +84,7 @@ const Home = ({navigation}) => {
               }}>
               An auction without a bid is no auction at all
             </Text>
-          </LinearGradient>
-          <LinearGradient style={styles.img2} colors={['#fffcfc', '#6C7C87']}>
-            <Image
-              source={require('../Assets/Image/Banner.png')}
-              style={styles.img1}
-            />
-            <Text
-              style={{
-                position: 'absolute',
-                color: Colors.White,
-                fontFamily: 'Poppins-Bold',
-                fontSize: 20,
-                width: 300,
-                textAlign: 'center',
-                left: 20,
-              }}>
-              An auction without a bid is no auction at all
-            </Text>
-          </LinearGradient>
+          </LinearGradient> */}
         </ScrollView>
         <View style={{marginHorizontal: 20}}>
           <Text style={styles.heading1}>Upcoming Aution</Text>

@@ -10,8 +10,21 @@ import {
 } from 'react-native';
 import Backbtn from '../Components/Button/Backbtn';
 import {Colors} from '../Theme/Color';
+import {apicaller} from '../Components/ApiCaller/Api';
 
 const Tnc = () => {
+  const [data, setData] = useState([]);
+  useEffect(() => {
+    apicaller(`terms`, null, 'get', null)
+      .then(function (response) {
+        console.log(JSON.stringify(response.data.result[0]));
+        setData(response.data.result[0]);
+      })
+      .catch(function (error) {
+        console.log(error.response.data);
+      });
+  }, []);
+
   return (
     <ImageBackground
       style={styles.Image}
@@ -32,31 +45,7 @@ const Tnc = () => {
         </View>
         <View style={styles.btn1}>
           <ScrollView>
-            <Text style={styles.infotxt}>
-              Lorem Ipsum is simply dummy text of the printing and typesetting
-              industry. Lorem Ipsum has been the industry's standard dummy text
-              ever since the 1500s, when an Lorem Ipsum has been Lorem Ipsum is
-              simply dummy text of the printing and typesetting industry. Lorem
-              Ipsum has been the industry's standard dummy text ever since the
-              1500s, when an Lorem Ipsum has been Lorem Ipsum is simply dummy
-              text of the printing and typesetting industry. Lorem Ipsum has
-              been the industry's standard dummy text ever since the 1500s, when
-              an Lorem Ipsum has been Lorem Ipsum is simply dummy text of the
-              printing and typesetting industry. Lorem Ipsum has been the
-              industry's standard dummy text ever since the 1500s, when an Lorem
-              Ipsum has been Lorem Ipsum is simply dummy text of the printing
-              and typesetting industry. Lorem Ipsum has been the industry's
-              standard dummy text ever since the 1500s, when an Lorem Ipsum has
-              been Lorem Ipsum is simply dummy text of the printing and
-              typesetting industry. Lorem Ipsum has been the industry's standard
-              dummy text ever since the 1500s, when an Lorem Ipsum has been
-              Lorem Ipsum is simply dummy text of the printing and typesetting
-              industry. Lorem Ipsum has been the industry's standard dummy text
-              ever since the 1500s, when an Lorem Ipsum has been Lorem Ipsum is
-              simply dummy text of the printing and typesetting industry. Lorem
-              Ipsum has been the industry's standard dummy text ever since the
-              1500s, when an Lorem Ipsum has been
-            </Text>
+            <Text style={styles.infotxt}>{data.description}</Text>
           </ScrollView>
         </View>
       </View>
