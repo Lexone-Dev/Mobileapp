@@ -49,7 +49,7 @@ const App = () => {
 };
 function All() {
   return (
-    <Stack.Navigator initialRouteName="Forgot">
+    <Stack.Navigator initialRouteName="Login">
       <Stack.Screen
         name="Login"
         component={Login}

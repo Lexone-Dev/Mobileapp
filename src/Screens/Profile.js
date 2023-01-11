@@ -1,23 +1,24 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {
   SafeAreaView,
   View,
   Image,
   StyleSheet,
-  TouchableOpacity,
   Text,
   ImageBackground,
-  TextInput,
   Dimensions,
-  ScrollView,
 } from 'react-native';
-import SmallBtn from '../Components/Button/SmallBtn';
-import Header from '../Components/Header/Header';
-import Topbar from '../Components/Header/Topbar';
+import {useSelector} from 'react-redux';
+import {getToken, getUser} from '../Redux/slices/userSlice';
+import {apicaller} from '../Components/ApiCaller/Api';
 import Topbar_edit from '../Components/Header/Topbar_edit';
 import {Colors} from '../Theme/Color';
 
 const Profile = ({navigation}) => {
+  const Token = useSelector(getToken);
+  const user = useSelector(getUser);
+  console.log('user', user);
+
   return (
     <ImageBackground
       style={styles.Image}
@@ -31,31 +32,41 @@ const Profile = ({navigation}) => {
           marginTop: 100,
         }}>
         <View style={styles.Box1}>
-          <Image
-            source={require('../Assets/Image/Profile.png')}
-            style={styles.img1}
-          />
+          <View style={styles.img1}>
+            <Text
+              style={{
+                color: Colors.White,
+                fontFamily: 'Poppins-Bold',
+                fontSize: 50,
+                marginTop: 13,
+              }}>
+              {user.firstName[0]}
+              {user.lastName[0]}
+            </Text>
+          </View>
+
           <Text
             style={{
               color: Colors.Blue,
-              fontWeight: 'bold',
+              fontFamily: 'Poppins-Bold',
               fontSize: 20,
               marginTop: 30,
             }}>
-            Deepali Samal
+            {user.firstName} {user.lastName}
           </Text>
-          <Text style={styles.txt}>Software Enginner at Codekart Solution</Text>
+          <Text style={styles.txt}>
+            {user?.designation} at {user.companyName}
+          </Text>
         </View>
 
         <View style={[styles.Box2]}>
-          <Text style={styles.txt}>Email ID : sagarika@gmail.com</Text>
+          <Text style={styles.txt}>Email ID : {user.email}</Text>
 
-          <Text style={styles.txt}>Phone Number : 91 7008170556</Text>
+          <Text style={styles.txt}>Phone Number : 91 {user.mobileNumber}</Text>
 
-          <Text style={styles.txt}>DOB : 07.10.1999</Text>
+          <Text style={styles.txt}>DOB : {user.dob}</Text>
 
-          <Text style={styles.txt}>Identity Number : 1234 4567 345</Text>
-          <Text style={styles.txt}>Identity Name : Government ID</Text>
+          <Text style={styles.txt}>Pan Number : {user.panCard}</Text>
         </View>
       </View>
     </ImageBackground>
@@ -86,14 +97,19 @@ const styles = StyleSheet.create({
   },
   img1: {
     position: 'absolute',
-    bottom: 100,
+    bottom: 110,
     height: 100,
     width: 100,
+    backgroundColor: Colors.Blue,
+    borderRadius: 50,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   txt: {
     color: Colors.White,
     fontSize: 14,
     marginTop: 10,
+    fontFamily: 'Poppins-Medium',
   },
 });
 

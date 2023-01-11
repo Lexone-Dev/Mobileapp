@@ -14,9 +14,9 @@ import {useDispatch} from 'react-redux';
 import {apicaller} from '../Components/ApiCaller/Api';
 import SmallBtn from '../Components/Button/SmallBtn';
 import Header from '../Components/Header/Header';
-import {setToken} from '../Redux/slices/userSlice';
+import {setToken, setUser} from '../Redux/slices/userSlice';
 import {Colors} from '../Theme/Color';
-
+import jwt_decode from 'jwt-decode';
 const Login = ({navigation}) => {
   const [email, setEmail] = React.useState();
   const [password, setPassword] = React.useState();
@@ -32,8 +32,11 @@ const Login = ({navigation}) => {
   function userlogin() {
     apicaller(`/user/login`, data, 'post', null)
       .then(function (response) {
-        console.log(JSON.stringify(response.data.result.token));
+        console.log(JSON.stringify(response));
         dispatch(setToken(JSON.stringify(response.data.result.token)));
+        var decoded = jwt_decode(response.data.result.token);
+        dispatch(setUser(decoded.data));
+        console.log('my token is ', decoded.data);
         navigation.navigate('Home');
       })
       .catch(function (error) {
