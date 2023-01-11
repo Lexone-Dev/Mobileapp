@@ -22,6 +22,8 @@ import Store from './src/Redux/store';
 import SplashScreen from 'react-native-splash-screen';
 import Profile_edit from './src/Screens/Profile_edit.js';
 import ProjectdetailsCancel from './src/Screens/ProjectdetailsCancelScreen';
+import Otp from './src/Screens/Otp.js';
+import Confirmpsw from './src/Screens/Confirmpsw.js';
 const Stack = createNativeStackNavigator();
 const Drawer = createDrawerNavigator();
 const App = () => {
@@ -47,7 +49,7 @@ const App = () => {
 };
 function All() {
   return (
-    <Stack.Navigator>
+    <Stack.Navigator initialRouteName="Forgot">
       <Stack.Screen
         name="Login"
         component={Login}
@@ -87,11 +89,6 @@ function All() {
       />
 
       <Stack.Screen
-        name="Forgot"
-        component={Forgot}
-        options={{headerShown: false}}
-      />
-      <Stack.Screen
         name="CreateProject"
         component={CreateProject}
         options={{headerShown: false}}
@@ -126,6 +123,17 @@ function All() {
       <Stack.Screen
         name="AboutUs"
         component={AboutUs}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="Forgot"
+        component={Forgot}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen name="Otp" component={Otp} options={{headerShown: false}} />
+      <Stack.Screen
+        name="Confirmpsw"
+        component={Confirmpsw}
         options={{headerShown: false}}
       />
     </Stack.Navigator>
