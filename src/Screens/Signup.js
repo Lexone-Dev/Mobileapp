@@ -99,6 +99,7 @@ const Signup = ({navigation}) => {
               placeholderTextColor={Colors.Grey}
               onChangeText={setPassword}
               value={password}
+              secureTextEntry={true}
             />
           </View>
           {error == 'password' && (
@@ -121,6 +122,7 @@ const Signup = ({navigation}) => {
               placeholderTextColor={Colors.Grey}
               onChangeText={setConfirmPassword}
               value={confirmpassword}
+              secureTextEntry={true}
             />
           </View>
           {error == 'confirmpasssword' && (

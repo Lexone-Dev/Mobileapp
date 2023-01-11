@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {
   SafeAreaView,
   View,
@@ -10,11 +10,27 @@ import {
   TextInput,
   Dimensions,
 } from 'react-native';
+import {apicaller} from '../Components/ApiCaller/Api';
 import SmallBtn from '../Components/Button/SmallBtn';
 import Header from '../Components/Header/Header';
 import {Colors} from '../Theme/Color';
-
+import axios from 'axios';
 const Forgot = ({navigation}) => {
+  const [email, setEmail] = useState('');
+  var data = JSON.stringify({
+    email: email,
+  });
+  console.log(email);
+  function reset() {
+    apicaller('/user/forgot', data, 'post', null)
+      .then(function (response) {
+        console.log(JSON.stringify(response.data));
+        navigation.navigate('Confirmpsw', {email});
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  }
   return (
     <ImageBackground
       style={styles.Image}
@@ -37,13 +53,14 @@ const Forgot = ({navigation}) => {
               style={styles.placeholder}
               placeholder="Enter Email Id"
               placeholderTextColor={Colors.Grey}
+              onChangeText={setEmail}
             />
           </View>
         </View>
 
         <View style={styles.btnview}>
-          <TouchableOpacity onPress={() => navigation.navigate('Login')}>
-            <SmallBtn title="Confirm" />
+          <TouchableOpacity onPress={() => reset()}>
+            <SmallBtn title="Send OTP" />
           </TouchableOpacity>
         </View>
       </SafeAreaView>
