@@ -16,12 +16,15 @@ import {
   DrawerItemList,
   DrawerItem,
 } from '@react-navigation/drawer';
+import {useDispatch, useSelector} from 'react-redux';
+import {cleardata, getUser} from './src/Redux/slices/userSlice';
 
 const CustomSidebarMenu = ({navigation}, props) => {
   const BASE_PATH =
     'https://raw.githubusercontent.com/AboutReact/sampleresource/master/';
   const proileImage = 'react_logo.png';
-
+  const user = useSelector(getUser);
+  const dispatch = useDispatch();
   return (
     <SafeAreaView style={{flex: 1, backgroundColor: '#07030B'}}>
       {/*Top Large Image */}
@@ -35,7 +38,8 @@ const CustomSidebarMenu = ({navigation}, props) => {
           marginTop: 50,
           marginLeft: 20,
         }}>
-        Welcome{`\n`}Sagarika Mohanty
+        Welcome{`\n`}
+        {user?.firstName} {user?.lastName}
       </Text>
 
       <View style={styles.customItem}>
@@ -90,7 +94,7 @@ const CustomSidebarMenu = ({navigation}, props) => {
           />
         </View>
       </View>
-      <View style={styles.customItem}>
+      {/* <View style={styles.customItem}>
         <View
           style={{
             flexDirection: 'row',
@@ -115,7 +119,7 @@ const CustomSidebarMenu = ({navigation}, props) => {
             style={styles.iconStyle}
           />
         </View>
-      </View>
+      </View> */}
       <View style={styles.customItem}>
         <View
           style={{
@@ -205,6 +209,7 @@ const CustomSidebarMenu = ({navigation}, props) => {
           }}>
           <Text
             onPress={() => {
+              dispatch(cleardata());
               navigation.navigate('Login');
             }}
             style={{
