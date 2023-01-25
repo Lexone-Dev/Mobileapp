@@ -10,6 +10,7 @@ import {
   TextInput,
   Dimensions,
 } from 'react-native';
+import {ScrollView} from 'react-native-gesture-handler';
 import SmallBtn from '../Components/Button/SmallBtn';
 import Header from '../Components/Header/Header';
 import {Colors} from '../Theme/Color';
@@ -53,94 +54,96 @@ const Signup = ({navigation}) => {
       source={require('../Assets/Image/BackgroundImage.png')}
       resizeMode="cover">
       <SafeAreaView style={styles.container}>
-        <Header
-          Headertitle="Sign up"
-          Smalltitle="Please Sign up to Continue. "
-        />
-        <View style={styles.inputview}>
-          <Text style={styles.title}>Email Id</Text>
-          <View style={styles.Subinputview}>
-            <Image
-              source={require('../Assets/Image/Email.png')}
-              height={20}
-              width={20}
-            />
-            <TextInput
-              style={styles.placeholder}
-              placeholder="Enter Email Id"
-              placeholderTextColor={Colors.Grey}
-              onChangeText={setEmail}
-              value={email}
-            />
+        <ScrollView>
+          <Header
+            Headertitle="Sign up"
+            Smalltitle="Please Sign up to Continue. "
+          />
+          <View style={styles.inputview}>
+            <Text style={styles.title}>Email Id</Text>
+            <View style={styles.Subinputview}>
+              <Image
+                source={require('../Assets/Image/Email.png')}
+                height={20}
+                width={20}
+              />
+              <TextInput
+                style={styles.placeholder}
+                placeholder="Enter Email Id"
+                placeholderTextColor={Colors.Grey}
+                onChangeText={setEmail}
+                value={email}
+              />
+            </View>
+            {error == 'email' && (
+              <Text style={{color: Colors.Red, alignSelf: 'flex-end'}}>
+                ** Must enter Email ID
+              </Text>
+            )}
+            {error == 'emailcheck' && (
+              <Text style={{color: Colors.Red, alignSelf: 'flex-end'}}>
+                ** Invalid Email ID
+              </Text>
+            )}
           </View>
-          {error == 'email' && (
-            <Text style={{color: Colors.Red, alignSelf: 'flex-end'}}>
-              ** Must enter Email ID
-            </Text>
-          )}
-          {error == 'emailcheck' && (
-            <Text style={{color: Colors.Red, alignSelf: 'flex-end'}}>
-              ** Invalid Email ID
-            </Text>
-          )}
-        </View>
 
-        <View style={styles.inputview}>
-          <Text style={styles.title}>Password</Text>
-          <View style={styles.Subinputview}>
-            <Image
-              source={require('../Assets/Image/Password.png')}
-              height={20}
-              width={20}
-            />
-            <TextInput
-              style={styles.placeholder}
-              placeholder="Enter Password"
-              placeholderTextColor={Colors.Grey}
-              onChangeText={setPassword}
-              value={password}
-              secureTextEntry={true}
-            />
+          <View style={styles.inputview}>
+            <Text style={styles.title}>Password</Text>
+            <View style={styles.Subinputview}>
+              <Image
+                source={require('../Assets/Image/Password.png')}
+                height={20}
+                width={20}
+              />
+              <TextInput
+                style={styles.placeholder}
+                placeholder="Enter Password"
+                placeholderTextColor={Colors.Grey}
+                onChangeText={setPassword}
+                value={password}
+                secureTextEntry={true}
+              />
+            </View>
+            {error == 'password' && (
+              <Text style={{color: Colors.Red, alignSelf: 'flex-end'}}>
+                ** Must enter password
+              </Text>
+            )}
           </View>
-          {error == 'password' && (
-            <Text style={{color: Colors.Red, alignSelf: 'flex-end'}}>
-              ** Must enter password
-            </Text>
-          )}
-        </View>
-        <View style={styles.inputview}>
-          <Text style={styles.title}>Confirm Password</Text>
-          <View style={styles.Subinputview}>
-            <Image
-              source={require('../Assets/Image/Password.png')}
-              height={20}
-              width={20}
-            />
-            <TextInput
-              style={styles.placeholder}
-              placeholder="Enter Confirm Password"
-              placeholderTextColor={Colors.Grey}
-              onChangeText={setConfirmPassword}
-              value={confirmpassword}
-              secureTextEntry={true}
-            />
+          <View style={styles.inputview}>
+            <Text style={styles.title}>Confirm Password</Text>
+            <View style={styles.Subinputview}>
+              <Image
+                source={require('../Assets/Image/Password.png')}
+                height={20}
+                width={20}
+              />
+              <TextInput
+                style={styles.placeholder}
+                placeholder="Enter Confirm Password"
+                placeholderTextColor={Colors.Grey}
+                onChangeText={setConfirmPassword}
+                value={confirmpassword}
+                secureTextEntry={true}
+              />
+            </View>
+            {error == 'confirmpasssword' && (
+              <Text style={{color: Colors.Red, alignSelf: 'flex-end'}}>
+                ** Must enter Confirm Password
+              </Text>
+            )}
+            {error == 'passswordcheck' && (
+              <Text style={{color: Colors.Red, alignSelf: 'flex-end'}}>
+                ** Password and Confirm password doesn't match
+              </Text>
+            )}
           </View>
-          {error == 'confirmpasssword' && (
-            <Text style={{color: Colors.Red, alignSelf: 'flex-end'}}>
-              ** Must enter Confirm Password
-            </Text>
-          )}
-          {error == 'passswordcheck' && (
-            <Text style={{color: Colors.Red, alignSelf: 'flex-end'}}>
-              ** Password and Confirm password doesn't match
-            </Text>
-          )}
-        </View>
-        <View style={styles.btnview}>
-          <TouchableOpacity onPress={() => usersignin()}>
-            <SmallBtn title="Continue" />
-          </TouchableOpacity>
-        </View>
+          <View style={styles.btnview}>
+            <TouchableOpacity onPress={() => usersignin()}>
+              <SmallBtn title="Continue" />
+            </TouchableOpacity>
+          </View>
+        </ScrollView>
       </SafeAreaView>
     </ImageBackground>
   );

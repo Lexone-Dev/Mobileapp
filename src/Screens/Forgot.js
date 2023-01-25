@@ -26,6 +26,7 @@ const Forgot = ({navigation}) => {
       .then(function (response) {
         console.log(JSON.stringify(response.data));
         navigation.navigate('Confirmpsw', {email});
+        alert('OTP send to your email id');
       })
       .catch(function (error) {
         console.log(error);
@@ -59,8 +60,10 @@ const Forgot = ({navigation}) => {
         </View>
 
         <View style={styles.btnview}>
-          <TouchableOpacity onPress={() => reset()}>
-            <SmallBtn title="Send OTP" />
+          <TouchableOpacity
+            disabled={email ? false : true}
+            onPress={() => reset()}>
+            <SmallBtn disable={email ? false : true} title="Send OTP" />
           </TouchableOpacity>
         </View>
       </SafeAreaView>

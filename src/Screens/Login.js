@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {
   SafeAreaView,
   View,
@@ -10,17 +10,20 @@ import {
   TextInput,
   Dimensions,
 } from 'react-native';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {apicaller} from '../Components/ApiCaller/Api';
 import SmallBtn from '../Components/Button/SmallBtn';
 import Header from '../Components/Header/Header';
-import {setToken, setUser} from '../Redux/slices/userSlice';
+import {getToken, setToken, setUser} from '../Redux/slices/userSlice';
 import {Colors} from '../Theme/Color';
 import jwt_decode from 'jwt-decode';
+import {useIsFocused} from '@react-navigation/native';
+import Loader from '../Components/Header/Loader';
 const Login = ({navigation}) => {
   const [email, setEmail] = React.useState();
   const [password, setPassword] = React.useState();
   const [error, setError] = React.useState('');
+  const [loader, setLoader] = React.useState(false);
   const emailRegex =
     /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$/i;
   const dispatch = useDispatch();
@@ -28,18 +31,27 @@ const Login = ({navigation}) => {
     email: email,
     password: password,
   });
+  const token = useSelector(getToken);
 
+  useEffect(() => {
+    if (token) {
+      navigation.navigate('Home');
+    }
+  }, [useIsFocused, token]);
   function userlogin() {
+    setLoader(true);
     apicaller(`/user/login`, data, 'post', null)
       .then(function (response) {
         console.log(JSON.stringify(response));
-        dispatch(setToken(JSON.stringify(response.data.result.token)));
+        dispatch(setToken(response.data.result.token));
         var decoded = jwt_decode(response.data.result.token);
         dispatch(setUser(decoded.data));
         console.log('my token is ', decoded.data);
+        setLoader(false);
         navigation.navigate('Home');
       })
       .catch(function (error) {
+        setLoader(false);
         console.log(error.response.data.response.message);
       });
   }
@@ -48,8 +60,10 @@ const Login = ({navigation}) => {
       style={styles.Image}
       source={require('../Assets/Image/BackgroundImage.png')}
       resizeMode="cover">
+      {loader && <Loader />}
       <SafeAreaView style={styles.container}>
         <Header Headertitle="Login" Smalltitle="Please Sign in to Continue." />
+
         <View style={styles.inputview}>
           <Text style={styles.title}>Email Id</Text>
           <View style={styles.Subinputview}>

@@ -8,10 +8,13 @@ import {
   Image,
   Dimensions,
 } from 'react-native';
+import {useSelector} from 'react-redux';
+import {getUser} from '../../Redux/slices/userSlice';
 import {Colors} from '../../Theme/Color';
 
 const Topbar = props => {
   const navigation = useNavigation();
+  const user = useSelector(getUser);
   return (
     <View style={styles.headerview}>
       <TouchableOpacity
@@ -26,7 +29,14 @@ const Topbar = props => {
           navigation.navigate('Profile');
         }}
         style={styles.Button}>
-        <Image source={require('../../Assets/Image/Profile.png')} />
+        <Text
+          style={{
+            color: Colors.Blue,
+            fontFamily: 'Poppins-Bold',
+            fontSize: 18,
+          }}>
+          {user?.firstName?.slice(0, 1)} {user?.lastName?.slice(0, 1)}
+        </Text>
       </TouchableOpacity>
     </View>
   );

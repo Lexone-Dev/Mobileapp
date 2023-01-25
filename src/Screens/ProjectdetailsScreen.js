@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   SafeAreaView,
   View,
@@ -11,6 +11,7 @@ import {
   Dimensions,
   ScrollView,
   Modal,
+  PermissionsAndroid,
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import Bidlist from '../Components/BoxLayout/BidList';
@@ -20,10 +21,119 @@ import MainBtn from '../Components/Button/MainBtn';
 import SmallBtn from '../Components/Button/SmallBtn';
 import Header from '../Components/Header/Header';
 import {Colors} from '../Theme/Color';
-
-const Projectdetails = ({navigation}) => {
+import RNFetchBlob from 'rn-fetch-blob';
+const Projectdetails = ({navigation, route}) => {
+  const data = route.params.props;
   const [more, setMore] = useState(2);
   const [modalshow, setModalshow] = useState(false);
+  console.log(data);
+  const [countdownDate, setCountdownDate] = useState(
+    new Date(`${data.bidLastDate}`).getTime(),
+  );
+  const [time, setTime] = useState({
+    days: 0,
+    hours: 0,
+    minutes: 0,
+    seconds: 0,
+  });
+
+  useEffect(() => {
+    setInterval(() => setNewTime(), 1000);
+  }, []);
+  const setNewTime = () => {
+    if (countdownDate) {
+      const currentTime = new Date().getTime();
+
+      const distanceToDate = countdownDate - currentTime;
+
+      let days = Math.floor(distanceToDate / (1000 * 60 * 60 * 24));
+      let hours = Math.floor(
+        (distanceToDate % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60),
+      );
+      let minutes = Math.floor(
+        (distanceToDate % (1000 * 60 * 60)) / (1000 * 60),
+      );
+      let seconds = Math.floor((distanceToDate % (1000 * 60)) / 1000);
+
+      const numbersToAddZeroTo = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+
+      days = `${days}`;
+      if (numbersToAddZeroTo.includes(hours)) {
+        hours = `0${hours}`;
+      } else if (numbersToAddZeroTo.includes(minutes)) {
+        minutes = `0${minutes}`;
+      } else if (numbersToAddZeroTo.includes(seconds)) {
+        seconds = `0${seconds}`;
+      }
+
+      setTime({days: days, hours: hours, minutes, seconds});
+    }
+  };
+  const downloadFile = async sheet => {
+    // Get today's date to add the time suffix in filename\
+    console.log('fileUrl', data.sheets);
+    let date = new Date();
+    // File URL which we want to download
+    let FILE_URL = data.sheets;
+    // Function to get extention of the file url
+    let file_ext = 'pdf';
+
+    file_ext = '.' + file_ext[0];
+
+    // config: To get response by passing the downloading related options
+    // fs: Root directory path to download
+    const {config, fs} = RNFetchBlob;
+    let RootDir = fs.dirs.PictureDir;
+    let options = {
+      fileCache: true,
+      addAndroidDownloads: {
+        path:
+          RootDir +
+          '/file_' +
+          Math.floor(date.getTime() + date.getSeconds() / 2) +
+          file_ext,
+        description: 'downloading file...',
+        notification: true,
+        // useDownloadManager works with Android only
+        useDownloadManager: true,
+      },
+    };
+    config(options)
+      .fetch('GET', FILE_URL)
+      .then(res => {
+        // Alert after successful downloading
+        console.log('res -> ', JSON.stringify(res));
+        alert('File Downloaded Successfully.');
+      });
+  };
+  const checkPermission = async sheet => {
+    console.log(sheet);
+    if (Platform.OS === 'ios') {
+      downloadFile(sheet);
+    } else {
+      try {
+        const granted = await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+          {
+            title: 'Storage Permission Required',
+            message:
+              'Application needs access to your storage to download File',
+          },
+        );
+        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+          // Start downloading
+          downloadFile();
+          console.log('Storage Permission Granted.');
+        } else {
+          // If permission denied then show alert
+          Alert.alert('Error', 'Storage Permission Not Granted');
+        }
+      } catch (err) {
+        // To handle permission related exception
+        console.log('++++' + err);
+      }
+    }
+  };
   return (
     <ImageBackground
       style={styles.Image}
@@ -32,44 +142,9 @@ const Projectdetails = ({navigation}) => {
       <Backbtn />
       <ScrollView>
         <View style={styles.Box1}>
-          <Image
-            source={require('../Assets/Image/Image.png')}
-            style={styles.img1}
-          />
+          <Image source={{uri: data.image}} style={styles.img1} />
 
           <View style={styles.Smallbox}>
-            <View>
-              <Text
-                style={{
-                  color: Colors.White,
-                  fontSize: 18,
-                  fontFamily: 'Poppins-SemiBold',
-                }}>
-                Netfilx
-              </Text>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                }}>
-                <Image
-                  source={require('../Assets/Image/Profile.png')}
-                  style={styles.img2}
-                />
-                <Text
-                  style={{
-                    color: Colors.White,
-                    marginLeft: 5,
-                    fontSize: 12,
-                    width: 80,
-                    fontFamily: 'Poppins-Medium',
-                  }}>
-                  Sagarika
-                </Text>
-              </View>
-            </View>
-
             <View
               style={{
                 backgroundColor: '#1E1E2D',
@@ -77,6 +152,7 @@ const Projectdetails = ({navigation}) => {
                 justifyContent: 'center',
                 alignItems: 'center',
                 padding: 10,
+                marginTop: 10,
               }}>
               <Text
                 style={{
@@ -88,69 +164,128 @@ const Projectdetails = ({navigation}) => {
               </Text>
               <View style={{flexDirection: 'row'}}>
                 <View style={styles.timebox}>
-                  <Text style={styles.time}>19</Text>
+                  <Text style={styles.time}>{time.days || '0'}</Text>
                 </View>
                 <Text style={{color: Colors.White, alignSelf: 'center'}}>
                   :
                 </Text>
                 <View style={styles.timebox}>
-                  <Text style={styles.time}>19</Text>
+                  <Text style={styles.time}>{time.hours || '00'}</Text>
                 </View>
                 <Text style={{color: Colors.White, alignSelf: 'center'}}>
                   :
                 </Text>
                 <View style={styles.timebox}>
-                  <Text style={styles.time}>19</Text>
+                  <Text style={styles.time}>{time.minutes || '00'}</Text>
+                </View>
+                <Text style={{color: Colors.White, alignSelf: 'center'}}>
+                  :
+                </Text>
+                <View style={styles.timebox}>
+                  <Text style={styles.time}>{time.seconds || '00'}</Text>
                 </View>
               </View>
             </View>
           </View>
         </View>
-        <View>
-          <Text style={styles.heading}>Description</Text>
-
-          <Text numberOfLines={more} style={styles.description}>
-            Lorem Ipsum is simply dummy text of the printing and typesetting
-            industry. Lorem Ipsum has been the industry's standard dummy text
-            ever since the 1500s, when an Lorem Ipsum has been
-          </Text>
-          <TouchableOpacity
-            onPress={() => {
-              if (more == 2) {
-                setMore(null);
-              } else {
-                setMore(2);
-              }
+        <View style={{marginHorizontal: 10}}>
+          <Text
+            style={{
+              color: Colors.White,
+              fontSize: 18,
+              fontFamily: 'Poppins-SemiBold',
             }}>
-            {more == 2 ? (
-              <Text style={{color: '#3C90E9'}}>... Read More</Text>
-            ) : (
-              <Text style={{color: '#3C90E9'}}>... Read Less</Text>
-            )}
-          </TouchableOpacity>
-        </View>
-        <View style={styles.Box3}>
-          <View style={styles.Box2}>
-            <Text style={styles.Head}>Min. Price</Text>
-            <Text style={styles.Titel}>$ 18</Text>
-          </View>
+            {data.projectname}
+          </Text>
 
-          <View style={styles.Box2}>
-            <Text style={styles.Head}>Current Price</Text>
-            <Text style={styles.Titel}>$ 26</Text>
-          </View>
+          {/* <View style={{marginTop: 10}}>
+            <Text style={styles.heading}>Description</Text>
 
-          <View style={styles.Box2}>
-            <Text style={styles.Head}>Project Pdf</Text>
-            <Image
-              source={require('../Assets/Image/Download.png')}
-              style={{height: 14, width: 14}}
-            />
+            <Text numberOfLines={more} style={styles.description}>
+              {data.descriptions}
+            </Text>
+          </View> */}
+          <View style={{marginTop: 10}}>
+            <Text style={styles.heading}>Description</Text>
+
+            <Text numberOfLines={more} style={styles.description}>
+              {data.descriptions}
+            </Text>
+            <TouchableOpacity
+              onPress={() => {
+                if (more == 2) {
+                  setMore(null);
+                } else {
+                  setMore(2);
+                }
+              }}>
+              {more == 2 ? (
+                <Text style={{color: '#3C90E9'}}>... Read More</Text>
+              ) : (
+                <Text style={{color: '#3C90E9'}}>... Read Less</Text>
+              )}
+            </TouchableOpacity>
+          </View>
+          <View
+            style={{
+              flexDirection: 'row',
+              marginVertical: 10,
+              alignItems: 'center',
+            }}>
+            <View
+              style={[
+                styles.img2,
+                {
+                  borderWidth: 1,
+                  borderColor: Colors.Blue,
+                  borderRadius: 20,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                },
+              ]}>
+              <Text
+                style={{
+                  color: Colors.White,
+
+                  fontSize: 14,
+                  fontFamily: 'Poppins-Medium',
+                }}>
+                {data?.user?.slice(0, 1)}
+              </Text>
+            </View>
+            <Text
+              style={{
+                color: Colors.White,
+                marginLeft: 10,
+                fontSize: 12,
+                width: 80,
+                fontFamily: 'Poppins-Medium',
+              }}>
+              {data.user}
+            </Text>
+          </View>
+          <View style={styles.Box3}>
+            <View style={styles.Box2}>
+              <Text style={styles.Head}>Min. Price</Text>
+              <Text style={styles.Titel}>$ {data.price}</Text>
+            </View>
+
+            <View style={styles.Box2}>
+              <Text style={styles.Head}>Current Price</Text>
+              <Text style={styles.Titel}>$ 26</Text>
+            </View>
+
+            <TouchableOpacity
+              style={styles.Box2}
+              onPress={() => checkPermission(data.sheets)}>
+              <Text style={styles.Head}>Project Pdf</Text>
+              <Image
+                source={require('../Assets/Image/Download.png')}
+                style={{height: 14, width: 14}}
+              />
+            </TouchableOpacity>
           </View>
         </View>
-        <Bidlist />
-        <Bidlist />
-        <Bidlist />
       </ScrollView>
       {/* <TouchableOpacity
         onPress={() => {
@@ -291,17 +426,19 @@ const styles = StyleSheet.create({
   img1: {
     width: Dimensions.get('window').width - 60,
     borderRadius: 28,
-
+    height: 350,
     borderColor: Colors.White,
     borderWidth: 1,
   },
   Box2: {
     backgroundColor: '#1E1E2D',
     borderRadius: 10,
-    justifyContent: 'center',
+    justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: 20,
+    paddingHorizontal: 5,
     paddingVertical: 15,
+    width: Dimensions.get('window').width / 3.7,
+    height: Dimensions.get('window').height / 12,
   },
   Head: {
     color: '#44C1F2',
@@ -351,26 +488,12 @@ const styles = StyleSheet.create({
     color: Colors.Grey,
     lineHeight: 20,
   },
-
   img2: {
     borderRadius: 28,
     height: 30,
     width: 30,
   },
-  Smallbox: {
-    height: 90,
-    padding: 10,
-    backgroundColor: 'rgba(0, 0, 0, 0.09)',
-    marginHorizontal: 10,
-    marginTop: -135,
-    marginBottom: 50,
-    borderRadius: 15,
-    borderColor: 'rgba(255, 255, 255, 1)',
-    borderWidth: 0.2,
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    alignItems: 'center',
-  },
+
   timebox: {
     justifyContent: 'center',
     alignItems: 'center',

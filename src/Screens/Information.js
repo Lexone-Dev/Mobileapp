@@ -13,9 +13,12 @@ import {
   Modal,
   Alert,
   Button,
+  ToastAndroid,
 } from 'react-native';
 import SmallBtn from '../Components/Button/SmallBtn';
 import Header from '../Components/Header/Header';
+import {CountryPicker} from 'react-native-country-codes-picker';
+import {CountryCode, Country} from './src/types';
 import {Colors} from '../Theme/Color';
 import {request, PERMISSIONS} from 'react-native-permissions';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
@@ -29,7 +32,12 @@ import NativeUploady, {
 } from '@rpldy/native-uploady';
 import {useDispatch} from 'react-redux';
 import {setUser} from '../Redux/slices/userSlice';
+import Loader from '../Components/Header/Loader';
+import DateTimePickerModal from 'react-native-modal-datetime-picker';
 const Information = ({navigation, route}) => {
+  const [countryCode, setCountryCode] = React.useState('+91');
+  const [countryflag, setCountryflag] = React.useState('🇨🇦');
+  const [show, setShow] = React.useState(false);
   console.log(route.params);
   const [proimg, setProimg] = useState();
   const [modalshow, setModalshow] = useState(false);
@@ -41,8 +49,25 @@ const Information = ({navigation, route}) => {
   const [designation, setDesiganation] = React.useState();
   const [panCard, setPancard] = React.useState();
   const [companyName, setCompanyname] = React.useState();
+  const [loader, setLoader] = React.useState(false);
+  const [err, setErr] = React.useState();
   const dispatch = useDispatch();
+  const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
+  const showDatePicker = () => {
+    setDatePickerVisibility(true);
+  };
+  const hideDatePicker = () => {
+    setDatePickerVisibility(false);
+  };
+  const handleConfirm = date => {
+    setDob(JSON.stringify(date).slice(1, 11));
+    console.log('A date has been picked: ', date);
+    hideDatePicker();
+  };
   const selectCamera = async () => {
+    function showToast() {
+      ToastAndroid.show('Request sent successfully!', ToastAndroid.SHORT);
+    }
     let options = {
       mediaType: 'photo',
       includeBase64: false,
@@ -109,22 +134,42 @@ const Information = ({navigation, route}) => {
     companyName: companyName,
   });
   function signup() {
+    setLoader(true);
     apicaller(`/user/create`, data, 'post', null)
       .then(function (response) {
         console.log(JSON.stringify(response.data));
         dispatch(setUser(response.data.result));
         navigation.navigate('Home');
+        setLoader(false);
       })
       .catch(function (error) {
         console.log(error.response.data);
+        setLoader(false);
       });
   }
-
+  function validation() {
+    if (firstName) {
+      if (lastName) {
+        if (mobileNumber) {
+          if (dob) {
+            if (panCard) {
+              if (companyName) {
+                if (designation) {
+                  signup();
+                } else setErr('designation');
+              } else setErr('companyName');
+            } else setErr('panCard');
+          } else setErr('dob');
+        } else setErr('mobileNumber');
+      } else setErr('lastName');
+    } else setErr('firstName');
+  }
   return (
     <ImageBackground
       style={styles.Image}
       source={require('../Assets/Image/BackgroundImage.png')}
       resizeMode="cover">
+      {loader && <Loader />}
       <SafeAreaView style={styles.container}>
         <View style={styles.header}>
           <Header
@@ -132,49 +177,8 @@ const Information = ({navigation, route}) => {
             Smalltitle="Please Sign up to Continue."
           />
         </View>
-        {/* <NativeUploady destination={{url: 'https://my-server.test.com/upload'}}>
-          <Upload />
-        </NativeUploady> */}
+
         <ScrollView>
-          <View style={styles.name_view}>
-            <View
-              style={{
-                borderRadius: 100,
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}>
-              {proimg ? (
-                <Image
-                  source={{
-                    uri: proimg,
-                  }}
-                  style={{height: 80, width: 80, borderRadius: 100}}
-                />
-              ) : (
-                <Image
-                  style={{height: 80, width: 80}}
-                  source={require('../Assets/Image/img.png')}
-                />
-              )}
-              <TouchableOpacity
-                style={{
-                  position: 'relative',
-                  bottom: 20,
-                  right: -30,
-                  backgroundColor: 'white',
-                  padding: 3,
-                  borderRadius: 50,
-                }}
-                onPress={() => {
-                  setModalshow(!modalshow);
-                }}>
-                <Image
-                  style={{height: 20, width: 20}}
-                  source={require('../Assets/Image/camera.png')}
-                />
-              </TouchableOpacity>
-            </View>
-          </View>
           <View style={styles.inputview}>
             <Text style={styles.title}>First Name</Text>
             <View style={styles.Subinputview}>
@@ -186,6 +190,11 @@ const Information = ({navigation, route}) => {
                 value={firstName}
               />
             </View>
+            {err == 'firstName' && (
+              <Text style={{color: 'red', alignSelf: 'flex-end'}}>
+                ** Required
+              </Text>
+            )}
           </View>
           <View style={styles.inputview}>
             <Text style={styles.title}>Last Name</Text>
@@ -198,55 +207,85 @@ const Information = ({navigation, route}) => {
                 value={lastName}
               />
             </View>
+            {err == 'lastName' && (
+              <Text style={{color: 'red', alignSelf: 'flex-end'}}>
+                ** Required
+              </Text>
+            )}
           </View>
+
           <View style={styles.inputview}>
             <Text style={styles.title}>Mobile Number</Text>
             <View style={styles.Subinputview}>
+              <TouchableOpacity
+                onPress={() => setShow(true)}
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  height: 55,
+                  width: '35%',
+                }}>
+                <CountryPicker
+                  show={show}
+                  initialState={'+91'}
+                  // when picker button press you will get the country object with dial code
+                  pickerButtonOnPress={item => {
+                    console.log(item);
+                    setCountryCode(item.dial_code);
+                    setCountryflag(item.flag);
+                    setShow(false);
+                  }}
+                />
+                <Text
+                  style={{
+                    color: Colors.Blue,
+                    fontFamily: 'Poppins-Bold',
+                    fontSize: 18,
+                  }}>
+                  <Text style={{letterSpacing: 30}}>{countryflag}</Text>
+                  <Text>{countryCode}</Text>
+                </Text>
+              </TouchableOpacity>
+              <Text style={{color: Colors.Grey, fontSize: 20, marginTop: -8}}>
+                |
+              </Text>
               <TextInput
                 style={styles.placeholder}
-                placeholder="Enter Mobile Number"
+                placeholder=" Enter Mobile Number"
                 placeholderTextColor={Colors.Grey}
                 onChangeText={setMobilenumber}
                 value={mobileNumber}
               />
             </View>
+            {err == 'mobileNumber' && (
+              <Text style={{color: 'red', alignSelf: 'flex-end'}}>
+                ** Required
+              </Text>
+            )}
           </View>
-          <View style={styles.inputview}>
+          <DateTimePickerModal
+            isVisible={isDatePickerVisible}
+            mode="date"
+            onConfirm={handleConfirm}
+            onCancel={hideDatePicker}
+          />
+          <TouchableOpacity onPress={showDatePicker} style={styles.inputview}>
             <Text style={styles.title}>DOB</Text>
             <View style={styles.Subinputview}>
               <TextInput
-                style={styles.placeholder}
+                style={[styles.placeholder, {width: '28%'}]}
                 placeholder="Enter DOB"
                 placeholderTextColor={Colors.Grey}
                 onChangeText={setDob}
                 value={dob}
               />
             </View>
-          </View>
-          <View style={styles.inputview}>
-            <Text style={styles.title}>Gender</Text>
-            <View style={styles.Subinputview}>
-              <TextInput
-                style={styles.placeholder}
-                placeholder="Enter Gender"
-                placeholderTextColor={Colors.Grey}
-                onChangeText={setGender}
-                value={gender}
-              />
-            </View>
-          </View>
-          <View style={styles.inputview}>
-            <Text style={styles.title}>Desiganation</Text>
-            <View style={styles.Subinputview}>
-              <TextInput
-                style={styles.placeholder}
-                placeholder="Enter Desiganation"
-                placeholderTextColor={Colors.Grey}
-                onChangeText={setDesiganation}
-                value={designation}
-              />
-            </View>
-          </View>
+            {err == 'dob' && (
+              <Text style={{color: 'red', alignSelf: 'flex-end'}}>
+                ** Required
+              </Text>
+            )}
+          </TouchableOpacity>
           <View style={styles.inputview}>
             <Text style={styles.title}>Pan Card Number</Text>
             <View style={styles.Subinputview}>
@@ -258,7 +297,13 @@ const Information = ({navigation, route}) => {
                 value={panCard}
               />
             </View>
+            {err == 'panCard' && (
+              <Text style={{color: 'red', alignSelf: 'flex-end'}}>
+                ** Required
+              </Text>
+            )}
           </View>
+
           <View style={styles.inputview}>
             <Text style={styles.title}>Company Name</Text>
             <View style={styles.Subinputview}>
@@ -270,118 +315,37 @@ const Information = ({navigation, route}) => {
                 value={companyName}
               />
             </View>
+            {err == 'companyName' && (
+              <Text style={{color: 'red', alignSelf: 'flex-end'}}>
+                ** Required
+              </Text>
+            )}
+          </View>
+
+          <View style={styles.inputview}>
+            <Text style={styles.title}>Desiganation</Text>
+            <View style={styles.Subinputview}>
+              <TextInput
+                style={styles.placeholder}
+                placeholder="Enter Desiganation"
+                placeholderTextColor={Colors.Grey}
+                onChangeText={setDesiganation}
+                value={designation}
+              />
+            </View>
+            {err == 'designation' && (
+              <Text style={{color: 'red', alignSelf: 'flex-end'}}>
+                ** Required
+              </Text>
+            )}
           </View>
 
           <View style={styles.btnview}>
-            <TouchableOpacity onPress={() => signup()}>
+            <TouchableOpacity onPress={() => validation()}>
               <SmallBtn title="Sign up" />
             </TouchableOpacity>
           </View>
         </ScrollView>
-        <View
-          style={{
-            backgroundColor: 'white',
-            position: 'absolute',
-            bottom: 0,
-          }}>
-          <Modal
-            animationType="slide"
-            transparent={true}
-            visible={modalshow}
-            onRequestClose={() => {
-              Alert.alert('Modal has been closed.');
-            }}>
-            <View
-              style={{
-                justifyContent: 'center',
-                alignItems: 'center',
-                height: Dimensions.get('window').height * 1,
-                backgroundColor: 'rgba(0, 0, 0, 0.70)',
-              }}>
-              <View
-                style={{
-                  backgroundColor: 'white',
-                  borderRadius: 20,
-                  padding: 30,
-                  width: Dimensions.get('window').width * 0.8,
-                }}>
-                <Text
-                  style={{
-                    fontSize: 20,
-                    fontFamily: 'Lato-Black',
-                    color: 'gray',
-                    marginBottom: 20,
-                  }}>
-                  Upload Image
-                </Text>
-                <View
-                  style={{
-                    width: '100%',
-                    alignItems: 'center',
-                  }}>
-                  <TouchableOpacity
-                    style={{
-                      justifyContent: 'space-between',
-                      alignItems: 'center',
-                      flexDirection: 'row',
-                      width: '100%',
-                      borderBottomColor: 'gray',
-                    }}
-                    onPress={() => {
-                      setModalshow(!modalshow);
-                      selectCamera();
-                    }}>
-                    <Text
-                      style={{
-                        fontSize: 16,
-                        fontFamily: 'Lato-Bold',
-                        color: 'gray',
-                      }}>
-                      Camera
-                    </Text>
-                    <Image
-                      style={{height: 20, width: 20}}
-                      source={require('../Assets/Image/camera.png')}
-                    />
-                  </TouchableOpacity>
-
-                  <TouchableOpacity
-                    style={{
-                      justifyContent: 'space-between',
-                      alignItems: 'center',
-                      flexDirection: 'row',
-                      width: '100%',
-                      height: 40,
-                    }}
-                    onPress={() => {
-                      setModalshow(!modalshow);
-                      selectGallery();
-                    }}>
-                    <Text
-                      style={{
-                        fontSize: 16,
-                        fontFamily: 'Lato-Bold',
-                        color: 'gray',
-                      }}>
-                      Gellary
-                    </Text>
-                    <Image
-                      style={{height: 20, width: 20}}
-                      source={require('../Assets/Image/gall.png')}
-                    />
-                  </TouchableOpacity>
-                </View>
-                <TouchableOpacity
-                  onPress={() => {
-                    setModalshow(!modalshow);
-                  }}
-                  style={{marginTop: 20, alignSelf: 'center'}}>
-                  <Text>close</Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-          </Modal>
-        </View>
       </SafeAreaView>
     </ImageBackground>
   );

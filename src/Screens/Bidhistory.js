@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   SafeAreaView,
   View,
@@ -11,20 +11,46 @@ import {
   Dimensions,
   ScrollView,
 } from 'react-native';
+import {useSelector} from 'react-redux';
+import {apicaller} from '../Components/ApiCaller/Api';
 import SmallBtn from '../Components/Button/SmallBtn';
 import Header from '../Components/Header/Header';
 import Topbar from '../Components/Header/Topbar';
+import {getToken, getUser} from '../Redux/slices/userSlice';
 import {Colors} from '../Theme/Color';
 
 const Bidhistory = ({navigation}) => {
   const [select, setSelect] = useState('Allproject');
+  const [prodata, setProdata] = useState([]);
+  const user = useSelector(getUser);
+  const userToken = useSelector(getToken);
+
+  useEffect(() => {
+    getallProjectsByUserFun();
+  }, []);
+
+  const getallProjectsByUserFun = () => {
+    apicaller(`project/get/${user._id}`, null, 'get', userToken)
+      .then(res => {
+        console.log('project/get', res.data.result);
+        setProdata(res.data.result);
+      })
+      .catch(e => {
+        console.log(e);
+      });
+  };
   return (
     <ImageBackground
       style={styles.Image}
       source={require('../Assets/Image/BackgroundImage.png')}
       resizeMode="cover">
       <Topbar />
-      <View style={styles.Box1}>
+      {prodata[0] == undefined && (
+        <Text style={{color: '#fff', alignSelf: 'center', marginVertical: 200}}>
+          No Bid Yet
+        </Text>
+      )}
+      {/* <View style={styles.Box1}>
         <TouchableOpacity
           onPress={() => {
             setSelect('Allproject');
@@ -59,66 +85,96 @@ const Bidhistory = ({navigation}) => {
             Created Project
           </Text>
         </TouchableOpacity>
-      </View>
+      </View> */}
       <ScrollView>
-        <TouchableOpacity
-          onPress={() => {
-            navigation.navigate('CreatedProject');
-          }}
-          style={styles.Box3}>
-          <View style={styles.Box5}>
-            <Text style={styles.head}>Netfilx</Text>
-            <View style={styles.Box4}>
-              <Image
-                source={require('../Assets/Image/Profile.png')}
-                style={styles.img1}
-              />
-              <Text style={{color: Colors.White, marginLeft: 20}}>
-                Deepali Samal
-              </Text>
-            </View>
-          </View>
-          <Image
-            source={require('../Assets/Image/Image.png')}
-            style={styles.imgs}
-          />
-          <View style={styles.Box6}>
-            <View style={styles.Box7}>
-              <Text style={styles.Head}>Bid Price</Text>
-              <View style={styles.timebox}>
-                <Text style={styles.Titel}>$ 18</Text>
+        {prodata.map(e => {
+          return (
+            <TouchableOpacity
+              onPress={() => {
+                navigation.navigate('CreatedProject', {e});
+              }}
+              style={styles.Box3}>
+              <View style={styles.Box5}>
+                <Text style={styles.head}>{e.name}</Text>
+                {/* <View style={styles.Box4}>
+                  <Image
+                    source={require('../Assets/Image/Profile.png')}
+                    style={styles.img1}
+                  />
+                  <Text style={{color: Colors.White, marginLeft: 20}}>
+                    Deepali Samal
+                  </Text>
+                </View> */}
               </View>
-            </View>
-            <View style={styles.Box7}>
-              <Text style={styles.Head}>Auction Ends</Text>
-              <View style={{flexDirection: 'row'}}>
-                <View style={styles.timebox}>
-                  <Text style={styles.time}>19</Text>
-                </View>
-                <Text style={{color: Colors.White, alignSelf: 'center'}}>
-                  :
+              <Image source={{uri: e.image}} style={styles.imgs} />
+              <View
+                style={{
+                  flexDirection: 'row',
+                  backgroundColor: 'rgba(255, 255, 255, 0.3)',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  marginHorizontal: 10,
+                  marginTop: 5,
+                  height: 30,
+                  borderRadius: 10,
+                }}>
+                <Text
+                  style={[
+                    styles.Head,
+                    {color: Colors.Blue, fontWeight: 'bold', fontSize: 14},
+                  ]}>
+                  Status :
                 </Text>
-                <View style={styles.timebox}>
-                  <Text style={styles.time}>19</Text>
-                </View>
-                <Text style={{color: Colors.White, alignSelf: 'center'}}>
-                  :
-                </Text>
-                <View style={styles.timebox}>
-                  <Text style={styles.time}>19</Text>
-                </View>
-              </View>
-            </View>
-            <View style={styles.Box7}>
-              <Text style={styles.Head}>Status</Text>
-              <View style={styles.timebox}>
-                <Text style={styles.Titel}>Live</Text>
-              </View>
-            </View>
-          </View>
-        </TouchableOpacity>
 
-        <View style={styles.Box3}>
+                <Text
+                  style={[
+                    styles.Titel,
+                    {color: Colors.Blue, fontWeight: 'bold', fontSize: 14},
+                  ]}>
+                  {e.status}
+                </Text>
+              </View>
+              <View style={styles.Box6}>
+                <View style={styles.Box7}>
+                  <Text style={styles.Head}>Bid Price</Text>
+                  <View style={styles.timebox}>
+                    <Text style={styles.Titel}>$ {e.price}</Text>
+                  </View>
+                </View>
+                <View style={styles.Box7}>
+                  <Text style={styles.Head}>Auction Ends</Text>
+                  <View style={{flexDirection: 'row'}}>
+                    <View style={styles.timebox}>
+                      <Text style={styles.time}>
+                        {e?.endDate?.slice(11, 15)}
+                      </Text>
+                    </View>
+                    <Text style={{color: Colors.White, alignSelf: 'center'}}>
+                      :
+                    </Text>
+                    <View style={styles.timebox}>
+                      <Text style={styles.time}>
+                        {' '}
+                        {e?.endDate?.slice(8, 10)}
+                      </Text>
+                    </View>
+                    <Text style={{color: Colors.White, alignSelf: 'center'}}>
+                      :
+                    </Text>
+                    <View style={styles.timebox}>
+                      <Text style={styles.time}>
+                        {' '}
+                        {e?.endDate?.slice(4, 7)}
+                      </Text>
+                    </View>
+                  </View>
+                </View>
+              </View>
+            </TouchableOpacity>
+          );
+        })}
+
+        {/* <View style={styles.Box3}>
           <View style={styles.Box5}>
             <Text style={styles.head}>Netfilx</Text>
             <View style={styles.Box4}>
@@ -155,9 +211,9 @@ const Bidhistory = ({navigation}) => {
               </View>
             </View>
           </View>
-        </View>
+        </View> */}
 
-        <View style={styles.Box3}>
+        {/* <View style={styles.Box3}>
           <View style={styles.Box5}>
             <Text style={styles.head}>Netfilx</Text>
             <View style={styles.Box4}>
@@ -214,7 +270,7 @@ const Bidhistory = ({navigation}) => {
               </View>
             </View>
           </View>
-        </View>
+        </View> */}
       </ScrollView>
     </ImageBackground>
   );
@@ -308,11 +364,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-around',
     alignItems: 'center',
-    marginVertical: 15,
+    marginVertical: 5,
   },
   Box7: {
-    width: 97,
     height: 64,
+    width: Dimensions.get('window').width / 2.8,
     backgroundColor: '#1E1E2D',
     borderRadius: 10,
     justifyContent: 'center',

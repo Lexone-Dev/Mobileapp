@@ -15,35 +15,44 @@ import {
   Button,
 } from 'react-native';
 import SmallBtn from '../Components/Button/SmallBtn';
-import Header from '../Components/Header/Header';
 import {Colors} from '../Theme/Color';
 import {request, PERMISSIONS} from 'react-native-permissions';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import DocumentPicker from 'react-native-document-picker';
 import {apicaller} from '../Components/ApiCaller/Api';
+import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import NativeUploady, {
   UploadyContext,
   useItemFinishListener,
   useItemStartListener,
   useItemErrorListener,
 } from '@rpldy/native-uploady';
-import {useDispatch} from 'react-redux';
-import {setUser} from '../Redux/slices/userSlice';
+import {useDispatch, useSelector} from 'react-redux';
+import {getToken, getUser, setUser} from '../Redux/slices/userSlice';
 import Backbtn from '../Components/Button/Backbtn';
 const Profile_edit = ({navigation}) => {
+  const user = useSelector(getUser);
   const [proimg, setProimg] = useState();
   const [modalshow, setModalshow] = useState(false);
-  const [firstName, setFirstname] = React.useState();
-  const [lastName, setLastname] = React.useState();
-  const [mobileNumber, setMobilenumber] = React.useState();
-  const [dob, setDob] = React.useState();
-  const [email, setEmail] = React.useState();
-  const [password, setPassword] = React.useState();
-  const [gender, setGender] = React.useState();
-  const [designation, setDesiganation] = React.useState();
-  const [panCard, setPancard] = React.useState();
-  const [companyName, setCompanyname] = React.useState();
-  const dispatch = useDispatch();
+  const [firstName, setFirstname] = React.useState(user?.firstName);
+  const [lastName, setLastname] = React.useState(user?.lastName);
+  const [dob, setDob] = React.useState(user?.dob?.slice(0, 10));
+  const [designation, setDesiganation] = React.useState(user?.designation);
+  const [panCard, setPancard] = React.useState(user?.panCard);
+  const [companyName, setCompanyname] = React.useState(user?.companyName);
+  const Token = useSelector(getToken);
+  const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
+  const showDatePicker = () => {
+    setDatePickerVisibility(true);
+  };
+  const hideDatePicker = () => {
+    setDatePickerVisibility(false);
+  };
+  const handleConfirm = date => {
+    setDob(JSON.stringify(date).slice(1, 11));
+    console.log('A date has been picked: ', date);
+    hideDatePicker();
+  };
   const selectCamera = async () => {
     let options = {
       mediaType: 'photo',
@@ -96,32 +105,36 @@ const Profile_edit = ({navigation}) => {
         setProimg(response.assets[0].uri);
       }
     });
+    isDatePickerVisible1;
   };
 
-  var data = JSON.stringify({
-    firstName: firstName,
-    lastName: lastName,
-    // email: route.params.email,
-    // password: route.params.password,
-    mobileNumber: mobileNumber,
-    gender: gender,
-    dob: dob,
-    designation: designation,
-    panCard: panCard,
-    companyName: companyName,
-  });
-  function edit() {
-    // apicaller(`/user/create`, data, 'post', null)
-    //   .then(function (response) {
-    //     console.log(JSON.stringify(response.data));
-    //     dispatch(setUser(response.data.result));
-    //     navigation.navigate('Home');
-    //   })
-    //   .catch(function (error) {
-    //     console.log(error.response.data);
-    //   });
-  }
+  const updateUser = async () => {
+    const data = {
+      firstName: firstName,
+      lastName: lastName,
+      companyName: companyName,
+      dob: dob,
+      panCard: panCard,
+      designation: designation,
+    };
 
+    await apicaller(
+      `user/update/${user._id}`,
+      data,
+      'put',
+      Token,
+      'application/json',
+    )
+      .then(res => {
+        if (res.status === 201 || res.status === 200) {
+          console.log('updated datas of user is ', res.data);
+          navigation.navigate('Profile');
+        }
+      })
+      .catch(error => {
+        console.log('error while profile updation is ', error);
+      });
+  };
   return (
     <ImageBackground
       style={styles.Image}
@@ -134,8 +147,8 @@ const Profile_edit = ({navigation}) => {
         {/* <NativeUploady destination={{url: 'https://my-server.test.com/upload'}}>
           <Upload />
         </NativeUploady> */}
-        <ScrollView style={{paddingVertical: 70}}>
-          <View style={styles.name_view}>
+        <ScrollView style={{paddingVertical: 50}}>
+          {/* <View style={styles.name_view}>
             <View
               style={{
                 borderRadius: 100,
@@ -173,31 +186,8 @@ const Profile_edit = ({navigation}) => {
                 />
               </TouchableOpacity>
             </View>
-          </View>
-          <View style={styles.inputview}>
-            <Text style={styles.title}>Email Id</Text>
-            <View style={styles.Subinputview}>
-              <TextInput
-                style={styles.placeholder}
-                placeholder="Enter Email Id"
-                placeholderTextColor={Colors.Grey}
-                onChangeText={setEmail}
-                value={firstName}
-              />
-            </View>
-          </View>
-          <View style={styles.inputview}>
-            <Text style={styles.title}>Password</Text>
-            <View style={styles.Subinputview}>
-              <TextInput
-                style={styles.placeholder}
-                placeholder="Enter Password"
-                placeholderTextColor={Colors.Grey}
-                onChangeText={setPassword}
-                value={firstName}
-              />
-            </View>
-          </View>
+          </View> */}
+
           <View style={styles.inputview}>
             <Text style={styles.title}>First Name</Text>
             <View style={styles.Subinputview}>
@@ -222,21 +212,17 @@ const Profile_edit = ({navigation}) => {
               />
             </View>
           </View>
-          <View style={styles.inputview}>
-            <Text style={styles.title}>Mobile Number</Text>
-            <View style={styles.Subinputview}>
-              <TextInput
-                style={styles.placeholder}
-                placeholder="Enter Mobile Number"
-                placeholderTextColor={Colors.Grey}
-                onChangeText={setMobilenumber}
-                value={mobileNumber}
-              />
-            </View>
-          </View>
+          <DateTimePickerModal
+            isVisible={isDatePickerVisible}
+            mode="date"
+            onConfirm={handleConfirm}
+            onCancel={hideDatePicker}
+          />
           <View style={styles.inputview}>
             <Text style={styles.title}>DOB</Text>
-            <View style={styles.Subinputview}>
+            <TouchableOpacity
+              onPress={showDatePicker}
+              style={styles.Subinputview}>
               <TextInput
                 style={styles.placeholder}
                 placeholder="Enter DOB"
@@ -244,20 +230,9 @@ const Profile_edit = ({navigation}) => {
                 onChangeText={setDob}
                 value={dob}
               />
-            </View>
+            </TouchableOpacity>
           </View>
-          <View style={styles.inputview}>
-            <Text style={styles.title}>Gender</Text>
-            <View style={styles.Subinputview}>
-              <TextInput
-                style={styles.placeholder}
-                placeholder="Enter Gender"
-                placeholderTextColor={Colors.Grey}
-                onChangeText={setGender}
-                value={gender}
-              />
-            </View>
-          </View>
+
           <View style={styles.inputview}>
             <Text style={styles.title}>Desiganation</Text>
             <View style={styles.Subinputview}>
@@ -296,7 +271,7 @@ const Profile_edit = ({navigation}) => {
           </View>
 
           <View style={styles.btnview}>
-            <TouchableOpacity onPress={() => signup()}>
+            <TouchableOpacity onPress={() => updateUser()}>
               <SmallBtn title="Save" />
             </TouchableOpacity>
           </View>
@@ -443,7 +418,6 @@ const styles = StyleSheet.create({
     fontFamily: 'Poppins-Regular',
     fontSize: 13,
     color: Colors.Grey,
-    width: '90%',
   },
   btnview: {
     justifyContent: 'center',

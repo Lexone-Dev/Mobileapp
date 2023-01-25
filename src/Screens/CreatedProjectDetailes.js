@@ -13,14 +13,11 @@ import {
   Modal,
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
-import Bidlist from '../Components/BoxLayout/BidList';
 import Backbtn from '../Components/Button/Backbtn';
-import MainBtn from '../Components/Button/MainBtn';
-import SmallBtn from '../Components/Button/SmallBtn';
-import Header from '../Components/Header/Header';
 import {Colors} from '../Theme/Color';
 
-const CreatedProjectDetailes = ({navigation}) => {
+const CreatedProjectDetailes = ({navigation, route}) => {
+  const data = route.params.e;
   const [more, setMore] = useState(2);
   const [modalshow, setModalshow] = useState(false);
   return (
@@ -31,20 +28,18 @@ const CreatedProjectDetailes = ({navigation}) => {
       <Backbtn />
       <ScrollView>
         <View style={styles.Box1}>
-          <Image
-            source={require('../Assets/Image/Image.png')}
-            style={styles.img1}
-          />
+          <Image source={{uri: data.image}} style={styles.img1} />
         </View>
         <View>
-          <Text style={styles.heading}>Description</Text>
+          <Text style={styles.heading}>{data.name}</Text>
+          {/* <Text style={styles.heading}>Description</Text>
 
           <Text numberOfLines={more} style={styles.description}>
             Lorem Ipsum is simply dummy text of the printing and typesetting
             industry. Lorem Ipsum has been the industry's standard dummy text
             ever since the 1500s, when an Lorem Ipsum has been
-          </Text>
-          <TouchableOpacity
+          </Text> */}
+          {/* <TouchableOpacity
             onPress={() => {
               if (more == 2) {
                 setMore(null);
@@ -57,25 +52,24 @@ const CreatedProjectDetailes = ({navigation}) => {
             ) : (
               <Text style={{color: '#3C90E9'}}>... Read Less</Text>
             )}
-          </TouchableOpacity>
+          </TouchableOpacity> */}
         </View>
         <View style={styles.Box3}>
           <View style={styles.Box2}>
-            <Text style={styles.Head}>Min. Price</Text>
-            <Text style={styles.Titel}>$ 18</Text>
+            <Text style={styles.Head}>Bid Price</Text>
+            <Text style={styles.Titel}>$ {data.price}</Text>
           </View>
 
-          <View style={styles.Box2}>
-            <Text style={styles.Head}>Current Price</Text>
-            <Text style={styles.Titel}>$ 26</Text>
-          </View>
-
-          <View style={styles.Box2}>
+          {/* <View style={styles.Box2}>
             <Text style={styles.Head}>Project Pdf</Text>
             <Image
               source={require('../Assets/Image/Download.png')}
               style={{height: 14, width: 14}}
             />
+          </View> */}
+          <View style={styles.Box2}>
+            <Text style={styles.Head}>Status</Text>
+            <Text style={styles.Titel}>{data.status}</Text>
           </View>
         </View>
         <View style={styles.Box4}>
@@ -354,6 +348,7 @@ const styles = StyleSheet.create({
   },
   img1: {
     width: Dimensions.get('window').width - 60,
+    height: 250,
     borderRadius: 28,
 
     borderColor: Colors.White,

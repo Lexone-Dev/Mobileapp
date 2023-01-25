@@ -14,7 +14,7 @@ const Upcomingbox = props => {
   const navigation = useNavigation();
   return (
     <TouchableOpacity
-      onPress={() => navigation.navigate('Projectdetails')}
+      onPress={() => navigation.navigate('Projectdetails', {props})}
       style={styles.Box1}>
       <View style={styles.Box3}>
         <View
@@ -33,50 +33,47 @@ const Upcomingbox = props => {
             backgroundColor: Colors.White,
             elevation: 24,
           }}>
-          <Image
-            source={require('../../Assets/Image/Image.png')}
-            style={styles.img1}
-          />
+          <Image source={{uri: props.image}} style={styles.img1} />
         </View>
         <View style={styles.Box2} />
-        <View style={styles.Smallbox}>
+        <Text
+          style={{
+            color: Colors.White,
+            fontSize: 18,
+            fontFamily: 'Poppins-Bold',
+            marginVertical: 10,
+            alignSelf: 'center',
+          }}>
+          {props?.projectname}
+        </Text>
+        <View
+          style={{
+            backgroundColor: '#1E1E2D',
+            borderRadius: 15,
+            justifyContent: 'center',
+            alignItems: 'center',
+            paddingHorizontal: 10,
+            height: 50,
+          }}>
           <Text
             style={{
-              color: Colors.White,
-              fontSize: 18,
-              fontFamily: 'Poppins-Bold',
+              fontFamily: 'Poppins-SemiBold',
+              fontSize: 10,
+              color: Colors.Blue,
             }}>
-            Netfilx
+            Auction Starts
           </Text>
-          <View
-            style={{
-              backgroundColor: '#1E1E2D',
-              borderRadius: 15,
-              justifyContent: 'center',
-              alignItems: 'center',
-              paddingHorizontal: 10,
-              height: 50,
-            }}>
-            <Text
-              style={{
-                fontFamily: 'Poppins-SemiBold',
-                fontSize: 10,
-                color: Colors.Blue,
-              }}>
-              Auction Starts
-            </Text>
-            <View style={{flexDirection: 'row'}}>
-              <View style={styles.timebox}>
-                <Text style={styles.time}>19</Text>
-              </View>
-              <Text style={{color: Colors.White, alignSelf: 'center'}}>:</Text>
-              <View style={styles.timebox}>
-                <Text style={styles.time}>19</Text>
-              </View>
-              <Text style={{color: Colors.White, alignSelf: 'center'}}>:</Text>
-              <View style={styles.timebox}>
-                <Text style={styles.time}>19</Text>
-              </View>
+          <View style={{flexDirection: 'row'}}>
+            <View style={styles.timebox}>
+              <Text style={styles.time}>{props?.bidDate?.slice(0, 4)}</Text>
+            </View>
+            <Text style={{color: Colors.White, alignSelf: 'center'}}>:</Text>
+            <View style={styles.timebox}>
+              <Text style={styles.time}>{props?.bidDate?.slice(5, 7)}</Text>
+            </View>
+            <Text style={{color: Colors.White, alignSelf: 'center'}}>:</Text>
+            <View style={styles.timebox}>
+              <Text style={styles.time}>{props?.bidDate?.slice(8)}</Text>
             </View>
           </View>
         </View>
@@ -91,7 +88,7 @@ const styles = StyleSheet.create({
     borderRadius: 29,
     backgroundColor: 'rgba(255, 255, 255, 0.07)',
     width: Dimensions.get('window').width / 1.3,
-    height: 300,
+    height: 350,
     marginRight: 12,
   },
   Box3: {
@@ -101,7 +98,7 @@ const styles = StyleSheet.create({
   },
   Box2: {
     position: 'absolute',
-    height: 150,
+    height: 180,
     width: Dimensions.get('window').width / 1.48,
     borderRadius: 28,
     backgroundColor: Colors.DarkBlue,
@@ -115,24 +112,23 @@ const styles = StyleSheet.create({
     borderColor: Colors.White,
     borderWidth: 1,
   },
-  Smallbox: {
-    position: 'absolute',
-    zIndex: 75,
-    top: 50,
-    width: Dimensions.get('window').width / 1.8,
-    height: 70,
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
-    marginHorizontal: 10,
-    marginTop: 125,
-    borderRadius: 25,
-    borderColor: 'rgba(255, 255, 255, 0.2)',
-    borderWidth: 1,
-    paddingVertical: 20,
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    alignItems: 'center',
-    alignSelf: 'center',
-  },
+  // Smallbox: {
+  //   position: 'absolute',
+  //   zIndex: 75,
+  //   top: 50,
+  //   width: Dimensions.get('window').width / 1.8,
+  //   height: 70,
+  //   backgroundColor: 'rgba(255, 255, 255, 0.2)',
+  //   marginHorizontal: 10,
+  //   marginTop: 125,
+  //   borderRadius: 25,
+  //   borderColor: 'rgba(255, 255, 255, 0.2)',
+  //   borderWidth: 1,
+  //   paddingVertical: 20,
+  //   justifyContent: 'space-around',
+  //   alignItems: 'center',
+  //   alignSelf: 'center',
+  // },
   timebox: {
     justifyContent: 'center',
     alignItems: 'center',
@@ -140,11 +136,11 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     margin: 5,
     height: 13,
-    width: 25,
   },
   time: {
     fontFamily: 'Poppins-Regular',
     fontSize: 10,
+    paddingHorizontal: 5,
     color: Colors.White,
   },
 });

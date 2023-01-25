@@ -18,17 +18,47 @@ import LinearGradient from 'react-native-linear-gradient';
 import {apicaller} from '../Components/ApiCaller/Api';
 
 const Home = ({navigation}) => {
-  const [data, setData] = useState([]);
+  const [advlexoneBanner, setLexoneAdvBanner] = useState([]);
+  const [liveDetail, setLiveDetail] = useState([]);
+  const [upcoming, setUpcoming] = useState([]);
+  const [loadmore, setLoadmore] = useState(8);
+
+  const [isLoading, setIsLoading] = useState(false);
+
   useEffect(() => {
-    apicaller(`banner`, null, 'get', null)
-      .then(function (response) {
-        console.log(JSON.stringify(response.data.result));
-        setData(response.data.result);
-      })
-      .catch(function (error) {
-        console.log(error.response.data);
-      });
+    getAllHomeData();
   }, []);
+
+  const getAllHomeData = () => {
+    setIsLoading(true);
+
+    apicaller('banner', null, 'get', null)
+      .then(res => {
+        setLexoneAdvBanner(res.data.result);
+      })
+      .catch(e => {
+        console.log(e);
+      });
+
+    apicaller('project/get-by-status?status=active', null, 'get', null, null)
+      .then(res => {
+        setLiveDetail(res.data.result);
+      })
+      .catch(e => {
+        console.log(e);
+      })
+      .finally(() => setIsLoading(false));
+
+    apicaller('project/get-by-status?status=inactive', null, 'get', null, null)
+      .then(res => {
+        setUpcoming(res.data.result);
+        // console.log('res.data.result', res.data.result);
+      })
+      .catch(e => {
+        console.log(e);
+      })
+      .finally(() => setIsLoading(false));
+  };
 
   return (
     <ImageBackground
@@ -50,15 +80,26 @@ const Home = ({navigation}) => {
         </View>
 
         <ScrollView horizontal={true} style={{marginLeft: 20}}>
-          <Liveauction />
-          <Liveauction />
-          <Liveauction />
+          {liveDetail?.slice(0, loadmore)?.map((item, i) => (
+            <Liveauction
+              bidLastDate={item?.endDate}
+              image={item?.image}
+              user={item?.createdBy?.firstName}
+              userimg={item?.createdBy?.image}
+              projectname={item?.name}
+              descriptions={item?.descriptions}
+              price={item?.price}
+              status={item?.status}
+              sheets={item?.sheet}
+              details1="Details"
+            />
+          ))}
         </ScrollView>
 
         <ScrollView
           horizontal={true}
           style={{marginVertical: 30, marginHorizontal: 20}}>
-          {data.map(item => {
+          {advlexoneBanner.map(item => {
             return (
               <LinearGradient
                 style={styles.img2}
@@ -92,9 +133,14 @@ const Home = ({navigation}) => {
         <ScrollView
           horizontal={true}
           style={{marginVertical: 20, marginLeft: 20}}>
-          <Upcomingbox />
-          <Upcomingbox />
-          <Upcomingbox />
+          {upcoming?.slice(0, loadmore)?.map((item, i) => (
+            <Upcomingbox
+              bidDate={item?.startDate}
+              image={item?.image}
+              projectname={item?.name}
+              details1="Details"
+            />
+          ))}
         </ScrollView>
       </ScrollView>
     </ImageBackground>
@@ -104,6 +150,7 @@ const Home = ({navigation}) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    marginBottom: 20,
   },
   Image: {
     justifyContent: 'center',

@@ -62,9 +62,9 @@ const Profile = ({navigation}) => {
         <View style={[styles.Box2]}>
           <Text style={styles.txt}>Email ID : {user.email}</Text>
 
-          <Text style={styles.txt}>Phone Number : 91 {user.mobileNumber}</Text>
+          <Text style={styles.txt}>Phone Number : {user.mobileNumber}</Text>
 
-          <Text style={styles.txt}>DOB : {user.dob}</Text>
+          <Text style={styles.txt}>DOB : {user.dob.slice(0, 10)}</Text>
 
           <Text style={styles.txt}>Pan Number : {user.panCard}</Text>
         </View>

@@ -15,7 +15,8 @@ export var UserSlice = createSlice({
       state.user = action.payload;
     },
     cleardata: (state, action) => {
-      (state.Token = null), console.log('All data clear');
+      ((state.Token = null), (state.user = null)),
+        console.log('All data clear');
     },
   },
 });
@@ -26,6 +27,6 @@ export const getToken = state => {
 export const getUser = state => {
   return state.user.user;
 };
-export const {setToken, setUser} = UserSlice.actions;
+export const {setToken, setUser, cleardata} = UserSlice.actions;
 
 export default UserSlice.reducer;

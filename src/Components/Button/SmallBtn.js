@@ -12,7 +12,9 @@ const SmallBtn = props => {
   console.log(props);
   return (
     <View>
-      <LinearGradient style={styles.btn} colors={['#3F84E3', '#062A3D']}>
+      <LinearGradient
+        style={styles.btn}
+        colors={props.disable ? ['#aaa', '#aaa'] : ['#3F84E3', '#062A3D']}>
         <Text style={styles.text}>{props.title}</Text>
       </LinearGradient>
     </View>
