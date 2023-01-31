@@ -42,6 +42,8 @@ const Profile_edit = ({navigation}) => {
   const [companyName, setCompanyname] = React.useState(user?.companyName);
   const Token = useSelector(getToken);
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
+  var regName = /^[a-zA-Z]+$/;
+  var regex = /([a-zA-Z]){5}([0-9]){4}([a-zA-Z]){1}$/;
   const showDatePicker = () => {
     setDatePickerVisibility(true);
   };
@@ -128,11 +130,25 @@ const Profile_edit = ({navigation}) => {
       .then(res => {
         if (res.status === 201 || res.status === 200) {
           console.log('updated datas of user is ', res.data);
-          navigation.navigate('Profile');
+          getAllProfileDatasOfAuser();
         }
       })
       .catch(error => {
         console.log('error while profile updation is ', error);
+      });
+  };
+
+  const dispatch = useDispatch();
+
+  const getAllProfileDatasOfAuser = async () => {
+    await apicaller(`user/get/${user._id}`, null, 'GET', Token, null)
+      .then(res => {
+        console.log(res?.data?.result);
+        dispatch(setUser(res?.data?.result));
+        navigation.navigate('Profile');
+      })
+      .catch(err => {
+        console.log('err in Get user profile is ', err);
       });
   };
   return (
@@ -254,8 +270,14 @@ const Profile_edit = ({navigation}) => {
                 placeholderTextColor={Colors.Grey}
                 onChangeText={setPancard}
                 value={panCard}
+                maxLength={10}
               />
             </View>
+            {!regex.test(panCard) && (
+              <Text style={{color: 'red', alignSelf: 'flex-end'}}>
+                ** Invalid card number
+              </Text>
+            )}
           </View>
           <View style={styles.inputview}>
             <Text style={styles.title}>Company Name</Text>
@@ -271,8 +293,10 @@ const Profile_edit = ({navigation}) => {
           </View>
 
           <View style={styles.btnview}>
-            <TouchableOpacity onPress={() => updateUser()}>
-              <SmallBtn title="Save" />
+            <TouchableOpacity
+              disabled={!regex.test(panCard)}
+              onPress={() => updateUser()}>
+              <SmallBtn disable={!regex.test(panCard)} title="Save" />
             </TouchableOpacity>
           </View>
         </ScrollView>

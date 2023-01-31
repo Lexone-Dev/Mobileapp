@@ -64,15 +64,12 @@ const Confirmpsw = ({navigation, route}) => {
       source={require('../Assets/Image/BackgroundImage.png')}
       resizeMode="cover">
       <SafeAreaView style={styles.container}>
-        <Header
-          Headertitle="Reset Password"
-          Smalltitle="Please Sign up to Continue. "
-        />
+        <Header Headertitle="Reset Password" />
         <View style={styles.inputview}>
           <Text style={styles.title}>OTP</Text>
           <View style={styles.Subinputview}>
             <Image
-              source={require('../Assets/Image/Email.png')}
+              source={require('../Assets/Image/Password.png')}
               height={20}
               width={20}
             />

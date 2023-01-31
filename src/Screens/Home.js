@@ -128,7 +128,7 @@ const Home = ({navigation}) => {
           </LinearGradient> */}
         </ScrollView>
         <View style={{marginHorizontal: 20}}>
-          <Text style={styles.heading1}>Upcoming Aution</Text>
+          <Text style={styles.heading1}>Upcoming Auction</Text>
         </View>
         <ScrollView
           horizontal={true}

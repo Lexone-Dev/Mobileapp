@@ -15,17 +15,20 @@ import SmallBtn from '../Components/Button/SmallBtn';
 import Header from '../Components/Header/Header';
 import {Colors} from '../Theme/Color';
 import axios from 'axios';
+import Loader from '../Components/Header/Loader';
 const Forgot = ({navigation}) => {
   const [email, setEmail] = useState('');
   var data = JSON.stringify({
     email: email,
   });
-  console.log(email);
+  const [loader, setLoader] = React.useState(false);
   function reset() {
+    setLoader(true);
     apicaller('/user/forgot', data, 'post', null)
       .then(function (response) {
         console.log(JSON.stringify(response.data));
         navigation.navigate('Confirmpsw', {email});
+        setLoader(false);
         alert('OTP send to your email id');
       })
       .catch(function (error) {
@@ -37,6 +40,7 @@ const Forgot = ({navigation}) => {
       style={styles.Image}
       source={require('../Assets/Image/BackgroundImage.png')}
       resizeMode="cover">
+      {loader && <Loader />}
       <SafeAreaView style={styles.container}>
         <Header
           Headertitle="Forgot Password"

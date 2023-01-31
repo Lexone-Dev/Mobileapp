@@ -9,6 +9,7 @@ import {
   ImageBackground,
   TextInput,
   Dimensions,
+  Alert,
 } from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import {apicaller} from '../Components/ApiCaller/Api';
@@ -53,6 +54,7 @@ const Login = ({navigation}) => {
       .catch(function (error) {
         setLoader(false);
         console.log(error.response.data.response.message);
+        Alert.alert(error.response.data.response.message);
       });
   }
   return (

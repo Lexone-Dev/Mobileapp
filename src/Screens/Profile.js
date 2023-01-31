@@ -8,17 +8,32 @@ import {
   ImageBackground,
   Dimensions,
 } from 'react-native';
-import {useSelector} from 'react-redux';
-import {getToken, getUser} from '../Redux/slices/userSlice';
+import {useDispatch, useSelector} from 'react-redux';
+import {getToken, getUser, setUser} from '../Redux/slices/userSlice';
 import {apicaller} from '../Components/ApiCaller/Api';
 import Topbar_edit from '../Components/Header/Topbar_edit';
 import {Colors} from '../Theme/Color';
+import {useIsFocused} from '@react-navigation/native';
 
 const Profile = ({navigation}) => {
   const Token = useSelector(getToken);
   const user = useSelector(getUser);
+  const dispatch = useDispatch();
   console.log('user', user);
+  useEffect(() => {
+    getAllProfileDatasOfAuser();
+  }, [useIsFocused]);
 
+  const getAllProfileDatasOfAuser = async () => {
+    await apicaller(`user/get/${user._id}`, null, 'GET', Token, null)
+      .then(res => {
+        console.log(res?.data?.result);
+        dispatch(setUser(res?.data?.result));
+      })
+      .catch(err => {
+        console.log('err in Get user profile is ', err);
+      });
+  };
   return (
     <ImageBackground
       style={styles.Image}

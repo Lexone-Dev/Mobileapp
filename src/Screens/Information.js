@@ -53,6 +53,8 @@ const Information = ({navigation, route}) => {
   const [err, setErr] = React.useState();
   const dispatch = useDispatch();
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
+  var regName = /^[a-zA-Z]+$/;
+  var regex = /([a-zA-Z]){5}([0-9]){4}([a-zA-Z]){1}$/;
   const showDatePicker = () => {
     setDatePickerVisibility(true);
   };
@@ -148,11 +150,11 @@ const Information = ({navigation, route}) => {
       });
   }
   function validation() {
-    if (firstName) {
-      if (lastName) {
-        if (mobileNumber) {
+    if (regName.test(firstName)) {
+      if (regName.test(lastName)) {
+        if (mobileNumber.length == 10) {
           if (dob) {
-            if (panCard) {
+            if (regex.test(panCard)) {
               if (companyName) {
                 if (designation) {
                   signup();
@@ -192,7 +194,7 @@ const Information = ({navigation, route}) => {
             </View>
             {err == 'firstName' && (
               <Text style={{color: 'red', alignSelf: 'flex-end'}}>
-                ** Required
+                ** Invalid
               </Text>
             )}
           </View>
@@ -209,7 +211,7 @@ const Information = ({navigation, route}) => {
             </View>
             {err == 'lastName' && (
               <Text style={{color: 'red', alignSelf: 'flex-end'}}>
-                ** Required
+                ** Invalid
               </Text>
             )}
           </View>
@@ -255,11 +257,12 @@ const Information = ({navigation, route}) => {
                 placeholderTextColor={Colors.Grey}
                 onChangeText={setMobilenumber}
                 value={mobileNumber}
+                maxLength={10}
               />
             </View>
             {err == 'mobileNumber' && (
               <Text style={{color: 'red', alignSelf: 'flex-end'}}>
-                ** Required
+                ** Invalid mobile number
               </Text>
             )}
           </View>
@@ -294,12 +297,13 @@ const Information = ({navigation, route}) => {
                 placeholder="Enter Pan Card Number"
                 placeholderTextColor={Colors.Grey}
                 onChangeText={setPancard}
-                value={panCard}
+                value={panCard.toUpperCase()}
+                maxLength={10}
               />
             </View>
             {err == 'panCard' && (
               <Text style={{color: 'red', alignSelf: 'flex-end'}}>
-                ** Required
+                ** Invalid card number
               </Text>
             )}
           </View>
