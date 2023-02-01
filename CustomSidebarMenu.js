@@ -41,7 +41,32 @@ const CustomSidebarMenu = ({navigation}, props) => {
         Welcome{`\n`}
         {user?.firstName} {user?.lastName}
       </Text>
-
+      <View style={styles.customItem}>
+        <View
+          style={{
+            flexDirection: 'row',
+            paddingHorizontal: 10,
+            justifyContent: 'space-between',
+            width: '100%',
+            alignItems: 'center',
+          }}>
+          <Text
+            onPress={() => {
+              navigation.navigate('Home');
+            }}
+            style={{
+              color: 'white',
+              fontSize: 18,
+              fontFamily: 'Poppins-SemiBold',
+            }}>
+            Home
+          </Text>
+          <Image
+            source={require('./src/Assets/Image/Vector.png')}
+            style={styles.iconStyle}
+          />
+        </View>
+      </View>
       <View style={styles.customItem}>
         <View
           style={{

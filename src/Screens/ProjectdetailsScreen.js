@@ -209,7 +209,8 @@ const Projectdetails = ({navigation, route}) => {
             <Text style={styles.heading}>Description</Text>
 
             <Text numberOfLines={more} style={styles.description}>
-              {data.descriptions}
+              {data?.descriptions}
+              {data?.items?.descriptions}
             </Text>
             <TouchableOpacity
               onPress={() => {
@@ -250,7 +251,8 @@ const Projectdetails = ({navigation, route}) => {
                   fontSize: 14,
                   fontFamily: 'Poppins-Medium',
                 }}>
-                {data?.user?.slice(0, 1)}
+                {data?.user?.slice(0, 1)}{' '}
+                {data?.items?.createdBy?.firstName?.slice(0, 1)}
               </Text>
             </View>
             <Text
@@ -258,21 +260,26 @@ const Projectdetails = ({navigation, route}) => {
                 color: Colors.White,
                 marginLeft: 10,
                 fontSize: 12,
-                width: 80,
+                width: 150,
                 fontFamily: 'Poppins-Medium',
               }}>
               {data.user}
+              {data?.items?.createdBy?.firstName}{' '}
+              {data?.items?.createdBy?.lastName}
             </Text>
           </View>
           <View style={styles.Box3}>
             <View style={styles.Box2}>
               <Text style={styles.Head}>Min. Price</Text>
-              <Text style={styles.Titel}>$ {data.price}</Text>
+              <Text style={styles.Titel}>
+                $ {data?.price}
+                {data?.items?.price}
+              </Text>
             </View>
 
             <View style={styles.Box2}>
               <Text style={styles.Head}>Current Price</Text>
-              <Text style={styles.Titel}>$ 26</Text>
+              <Text style={styles.Titel}>$ 00</Text>
             </View>
 
             <TouchableOpacity

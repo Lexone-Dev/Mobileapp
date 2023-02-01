@@ -245,6 +245,7 @@ const Profile_edit = ({navigation}) => {
                 placeholderTextColor={Colors.Grey}
                 onChangeText={setDob}
                 value={dob}
+                editable={false}
               />
             </TouchableOpacity>
           </View>
@@ -262,15 +263,14 @@ const Profile_edit = ({navigation}) => {
             </View>
           </View>
           <View style={styles.inputview}>
-            <Text style={styles.title}>Pan Card Number</Text>
+            <Text style={styles.title}>Company Registration Number</Text>
             <View style={styles.Subinputview}>
               <TextInput
                 style={styles.placeholder}
-                placeholder="Enter Pan Card Number"
+                placeholder="Enter Company Registration Number"
                 placeholderTextColor={Colors.Grey}
                 onChangeText={setPancard}
                 value={panCard}
-                maxLength={10}
               />
             </View>
             {!regex.test(panCard) && (

@@ -12,6 +12,7 @@ import {Colors} from '../../Theme/Color';
 
 const Upcomingbox = props => {
   const navigation = useNavigation();
+  console.log('Upcomingbox', props);
   return (
     <TouchableOpacity
       onPress={() => navigation.navigate('Projectdetails', {props})}

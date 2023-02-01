@@ -32,6 +32,7 @@ import NativeUploady, {
 } from '@rpldy/native-uploady';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import {color} from 'react-native-reanimated';
+import Loader from '../Components/Header/Loader';
 const CreateProject = ({navigation}) => {
   const [modalshow, setModalshow] = useState(false);
   const [proimg, setProimg] = useState();
@@ -45,6 +46,7 @@ const CreateProject = ({navigation}) => {
   const [err, setErr] = React.useState();
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
   const [isDatePickerVisible1, setDatePickerVisibility1] = useState(false);
+  const [loader, setLoader] = React.useState(false);
   const showDatePicker = () => {
     setDatePickerVisibility(true);
   };
@@ -171,7 +173,7 @@ const CreateProject = ({navigation}) => {
   };
   const submitData = async e => {
     // e.preventDefault();
-
+    setLoader(true);
     const data = {
       name: Name,
       startDate: BidStartDate,
@@ -197,10 +199,12 @@ const CreateProject = ({navigation}) => {
           setBidEndDate('');
           setBidSheetFile('');
           setAuctiondescription('');
+          setLoader(false);
         }
       })
       .catch(err => {
         console.log('error while open auction is ', err);
+        setLoader(false);
       });
   };
   function validation() {
@@ -226,6 +230,7 @@ const CreateProject = ({navigation}) => {
       style={styles.Image}
       source={require('../Assets/Image/BackgroundImage.png')}
       resizeMode="cover">
+      {loader && <Loader />}
       <SafeAreaView style={styles.container}>
         <View style={styles.backbutton}>
           <Backbtn />

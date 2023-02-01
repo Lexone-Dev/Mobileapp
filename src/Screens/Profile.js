@@ -81,7 +81,9 @@ const Profile = ({navigation}) => {
 
           <Text style={styles.txt}>DOB : {user.dob.slice(0, 10)}</Text>
 
-          <Text style={styles.txt}>Pan Number : {user.panCard}</Text>
+          <Text style={styles.txt}>
+            Company Registration Number : {user.panCard}
+          </Text>
         </View>
       </View>
     </ImageBackground>

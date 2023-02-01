@@ -35,7 +35,7 @@ import {setUser} from '../Redux/slices/userSlice';
 import Loader from '../Components/Header/Loader';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 const Information = ({navigation, route}) => {
-  const [countryCode, setCountryCode] = React.useState('+91');
+  const [countryCode, setCountryCode] = React.useState('+1');
   const [countryflag, setCountryflag] = React.useState('🇨🇦');
   const [show, setShow] = React.useState(false);
   console.log(route.params);
@@ -154,7 +154,7 @@ const Information = ({navigation, route}) => {
       if (regName.test(lastName)) {
         if (mobileNumber.length == 10) {
           if (dob) {
-            if (regex.test(panCard)) {
+            if (panCard) {
               if (companyName) {
                 if (designation) {
                   signup();
@@ -229,7 +229,7 @@ const Information = ({navigation, route}) => {
                 }}>
                 <CountryPicker
                   show={show}
-                  initialState={'+91'}
+                  initialState={'+1'}
                   // when picker button press you will get the country object with dial code
                   pickerButtonOnPress={item => {
                     console.log(item);
@@ -280,6 +280,7 @@ const Information = ({navigation, route}) => {
                 placeholder="Enter DOB"
                 placeholderTextColor={Colors.Grey}
                 onChangeText={setDob}
+                editable={false}
                 value={dob}
               />
             </View>
@@ -290,20 +291,19 @@ const Information = ({navigation, route}) => {
             )}
           </TouchableOpacity>
           <View style={styles.inputview}>
-            <Text style={styles.title}>Pan Card Number</Text>
+            <Text style={styles.title}>Company Registration Number</Text>
             <View style={styles.Subinputview}>
               <TextInput
                 style={styles.placeholder}
-                placeholder="Enter Pan Card Number"
+                placeholder="Enter Company Registration Number"
                 placeholderTextColor={Colors.Grey}
                 onChangeText={setPancard}
-                value={panCard.toUpperCase()}
-                maxLength={10}
+                value={panCard}
               />
             </View>
             {err == 'panCard' && (
               <Text style={{color: 'red', alignSelf: 'flex-end'}}>
-                ** Invalid card number
+                ** Required
               </Text>
             )}
           </View>

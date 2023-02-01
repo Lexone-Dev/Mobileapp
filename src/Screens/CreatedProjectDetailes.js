@@ -32,14 +32,12 @@ const CreatedProjectDetailes = ({navigation, route}) => {
         </View>
         <View>
           <Text style={styles.heading}>{data.name}</Text>
-          {/* <Text style={styles.heading}>Description</Text>
+          <Text style={[styles.Head, {color: Colors.White}]}>Description</Text>
 
           <Text numberOfLines={more} style={styles.description}>
-            Lorem Ipsum is simply dummy text of the printing and typesetting
-            industry. Lorem Ipsum has been the industry's standard dummy text
-            ever since the 1500s, when an Lorem Ipsum has been
-          </Text> */}
-          {/* <TouchableOpacity
+            {data.descriptions}
+          </Text>
+          <TouchableOpacity
             onPress={() => {
               if (more == 2) {
                 setMore(null);
@@ -52,7 +50,7 @@ const CreatedProjectDetailes = ({navigation, route}) => {
             ) : (
               <Text style={{color: '#3C90E9'}}>... Read Less</Text>
             )}
-          </TouchableOpacity> */}
+          </TouchableOpacity>
         </View>
         <View style={styles.Box3}>
           <View style={styles.Box2}>
@@ -72,7 +70,7 @@ const CreatedProjectDetailes = ({navigation, route}) => {
             <Text style={styles.Titel}>{data.status}</Text>
           </View>
         </View>
-        <View style={styles.Box4}>
+        {/* <View style={styles.Box4}>
           <View style={styles.Box5}>
             <Image
               source={require('../Assets/Image/Profile.png')}
@@ -124,107 +122,8 @@ const CreatedProjectDetailes = ({navigation, route}) => {
               <Text style={styles.text}>Accept Bid Request</Text>
             </LinearGradient>
           </TouchableOpacity>
-        </View>
+        </View> */}
 
-        <View style={styles.Box4}>
-          <View style={styles.Box5}>
-            <Image
-              source={require('../Assets/Image/Profile.png')}
-              style={styles.profileImg}
-            />
-            <View style={{marginHorizontal: 15}}>
-              <Text style={[styles.Head, {color: Colors.White}]}>
-                Bid placed by Sagarika Mohanty
-              </Text>
-              <Text style={[styles.Titel]}>Dec 05, 2021 at 18:33 pm</Text>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  alignContent: 'center',
-                  marginTop: 5,
-                }}>
-                <Image
-                  source={require('../Assets/Image/Download.png')}
-                  style={{height: 14, width: 14}}
-                />
-                <Text
-                  style={{
-                    color: Colors.Blue,
-                    fontFamily: 'Poppins-Medium',
-                    fontSize: 12,
-                    marginLeft: 5,
-                  }}>
-                  Download Pdf
-                </Text>
-              </View>
-            </View>
-            <View style={{flexDirection: 'row', marginLeft: 20}}>
-              <Text
-                style={{
-                  color: Colors.Blue,
-                  fontSize: 16,
-                  fontFamily: 'Poppins-Regular',
-                }}>
-                $ 3.5
-              </Text>
-            </View>
-          </View>
-          <TouchableOpacity style={{margin: 10, marginTop: 20}}>
-            <LinearGradient style={styles.btn} colors={['#3F84E3', '#062A3D']}>
-              <Text style={styles.text}>Accept Bid Request</Text>
-            </LinearGradient>
-          </TouchableOpacity>
-        </View>
-
-        <View style={styles.Box4}>
-          <View style={styles.Box5}>
-            <Image
-              source={require('../Assets/Image/Profile.png')}
-              style={styles.profileImg}
-            />
-            <View style={{marginHorizontal: 15}}>
-              <Text style={[styles.Head, {color: Colors.White}]}>
-                Bid placed by Sagarika Mohanty
-              </Text>
-              <Text style={[styles.Titel]}>Dec 05, 2021 at 18:33 pm</Text>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  alignContent: 'center',
-                  marginTop: 5,
-                }}>
-                <Image
-                  source={require('../Assets/Image/Download.png')}
-                  style={{height: 14, width: 14}}
-                />
-                <Text
-                  style={{
-                    color: Colors.Blue,
-                    fontFamily: 'Poppins-Medium',
-                    fontSize: 12,
-                    marginLeft: 5,
-                  }}>
-                  Download Pdf
-                </Text>
-              </View>
-            </View>
-            <View style={{flexDirection: 'row', marginLeft: 20}}>
-              <Text
-                style={{
-                  color: Colors.Blue,
-                  fontSize: 16,
-                  fontFamily: 'Poppins-Regular',
-                }}>
-                $ 3.5
-              </Text>
-            </View>
-          </View>
-          <TouchableOpacity style={{margin: 10, marginTop: 20}}>
-            <LinearGradient style={styles.btn} colors={['#3F84E3', '#062A3D']}>
-              <Text style={styles.text}>Accept Bid Request</Text>
-            </LinearGradient>
-          </TouchableOpacity>
-        </View>
         <View
           style={{
             backgroundColor: 'white',
@@ -409,7 +308,7 @@ const styles = StyleSheet.create({
   },
   heading: {
     fontFamily: 'Poppins-SemiBold',
-    fontSize: 14,
+    fontSize: 18,
     color: Colors.White,
     marginBottom: 10,
   },

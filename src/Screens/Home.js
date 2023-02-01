@@ -98,7 +98,7 @@ const Home = ({navigation}) => {
 
         <ScrollView
           horizontal={true}
-          style={{marginVertical: 30, marginHorizontal: 20}}>
+          style={{marginVertical: 30, marginLeft: 20}}>
           {advlexoneBanner.map(item => {
             return (
               <LinearGradient
@@ -134,11 +134,13 @@ const Home = ({navigation}) => {
           horizontal={true}
           style={{marginVertical: 20, marginLeft: 20}}>
           {upcoming?.slice(0, loadmore)?.map((item, i) => (
+            // console.log('item',item),
             <Upcomingbox
               bidDate={item?.startDate}
               image={item?.image}
               projectname={item?.name}
               details1="Details"
+              items={item}
             />
           ))}
         </ScrollView>
