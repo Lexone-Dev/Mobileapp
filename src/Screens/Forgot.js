@@ -9,6 +9,7 @@ import {
   ImageBackground,
   TextInput,
   Dimensions,
+  BackHandler,
 } from 'react-native';
 import {apicaller} from '../Components/ApiCaller/Api';
 import SmallBtn from '../Components/Button/SmallBtn';
@@ -35,6 +36,18 @@ const Forgot = ({navigation}) => {
         console.log(error);
       });
   }
+  useEffect(() => {
+    const backHandler = BackHandler.addEventListener(
+      'hardwareBackPress',
+      backAction,
+    );
+    return () => backHandler.remove();
+  }, []);
+  const backAction = () => {
+    navigation.goBack();
+    return true;
+  };
+
   return (
     <ImageBackground
       style={styles.Image}

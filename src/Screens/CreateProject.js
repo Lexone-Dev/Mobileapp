@@ -13,6 +13,7 @@ import {
   Image,
   Alert,
   Button,
+  BackHandler,
 } from 'react-native';
 import Backbtn from '../Components/Button/Backbtn';
 import SmallBtn from '../Components/Button/SmallBtn';
@@ -225,6 +226,18 @@ const CreateProject = ({navigation}) => {
   function pop(fname) {
     console.log(fname);
   }
+  useEffect(() => {
+    const backHandler = BackHandler.addEventListener(
+      'hardwareBackPress',
+      backAction,
+    );
+    return () => backHandler.remove();
+  }, []);
+  const backAction = () => {
+    navigation.goBack();
+    return true;
+  };
+
   return (
     <ImageBackground
       style={styles.Image}

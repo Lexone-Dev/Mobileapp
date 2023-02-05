@@ -9,6 +9,7 @@ import {
   ImageBackground,
   TextInput,
   Dimensions,
+  BackHandler,
 } from 'react-native';
 import {ScrollView} from 'react-native-gesture-handler';
 import SmallBtn from '../Components/Button/SmallBtn';
@@ -19,7 +20,8 @@ const Signup = ({navigation}) => {
   const [email, setEmail] = React.useState();
   const [password, setPassword] = React.useState();
   const [confirmpassword, setConfirmPassword] = React.useState();
-
+  const [eye, setEye] = React.useState(true);
+  const [eye1, setEye1] = React.useState(true);
   //Error message
   const [error, setError] = React.useState('');
   const emailRegex =
@@ -48,6 +50,18 @@ const Signup = ({navigation}) => {
     }
   }
   console.log('err = ', error);
+  useEffect(() => {
+    const backHandler = BackHandler.addEventListener(
+      'hardwareBackPress',
+      backAction,
+    );
+    return () => backHandler.remove();
+  }, []);
+  const backAction = () => {
+    navigation.goBack();
+    return true;
+  };
+
   return (
     <ImageBackground
       style={styles.Image}
@@ -101,8 +115,16 @@ const Signup = ({navigation}) => {
                 placeholderTextColor={Colors.Grey}
                 onChangeText={setPassword}
                 value={password}
-                secureTextEntry={true}
+                secureTextEntry={eye1}
               />
+              <TouchableOpacity onPress={() => setEye1(!eye1)}>
+                <Image
+                  source={require('../Assets/Image/Eye.png')}
+                  height={20}
+                  width={20}
+                  style={{marginLeft: -20}}
+                />
+              </TouchableOpacity>
             </View>
             {error == 'password' && (
               <Text style={{color: Colors.Red, alignSelf: 'flex-end'}}>
@@ -124,8 +146,16 @@ const Signup = ({navigation}) => {
                 placeholderTextColor={Colors.Grey}
                 onChangeText={setConfirmPassword}
                 value={confirmpassword}
-                secureTextEntry={true}
+                secureTextEntry={eye}
               />
+              <TouchableOpacity onPress={() => setEye(!eye)}>
+                <Image
+                  source={require('../Assets/Image/Eye.png')}
+                  height={20}
+                  width={20}
+                  style={{marginLeft: -20}}
+                />
+              </TouchableOpacity>
             </View>
             {error == 'confirmpasssword' && (
               <Text style={{color: Colors.Red, alignSelf: 'flex-end'}}>

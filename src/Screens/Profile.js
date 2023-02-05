@@ -7,6 +7,7 @@ import {
   Text,
   ImageBackground,
   Dimensions,
+  BackHandler,
 } from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import {getToken, getUser, setUser} from '../Redux/slices/userSlice';
@@ -34,6 +35,18 @@ const Profile = ({navigation}) => {
         console.log('err in Get user profile is ', err);
       });
   };
+  useEffect(() => {
+    const backHandler = BackHandler.addEventListener(
+      'hardwareBackPress',
+      backAction,
+    );
+    return () => backHandler.remove();
+  }, []);
+  const backAction = () => {
+    navigation.goBack();
+    return true;
+  };
+
   return (
     <ImageBackground
       style={styles.Image}

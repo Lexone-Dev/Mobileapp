@@ -14,6 +14,7 @@ import {
   Alert,
   Button,
   ToastAndroid,
+  BackHandler,
 } from 'react-native';
 import SmallBtn from '../Components/Button/SmallBtn';
 import Header from '../Components/Header/Header';
@@ -146,13 +147,14 @@ const Information = ({navigation, route}) => {
       })
       .catch(function (error) {
         console.log(error.response.data);
+        Alert.alert(error.response.data.message);
         setLoader(false);
       });
   }
   function validation() {
     if (regName.test(firstName)) {
       if (regName.test(lastName)) {
-        if (mobileNumber.length == 10) {
+        if (mobileNumber && mobileNumber.length == 10) {
           if (dob) {
             if (panCard) {
               if (companyName) {
@@ -166,6 +168,18 @@ const Information = ({navigation, route}) => {
       } else setErr('lastName');
     } else setErr('firstName');
   }
+  useEffect(() => {
+    const backHandler = BackHandler.addEventListener(
+      'hardwareBackPress',
+      backAction,
+    );
+    return () => backHandler.remove();
+  }, []);
+  const backAction = () => {
+    navigation.goBack();
+    return true;
+  };
+
   return (
     <ImageBackground
       style={styles.Image}
@@ -388,7 +402,7 @@ const styles = StyleSheet.create({
     fontFamily: 'Poppins-Regular',
     fontSize: 13,
     color: Colors.Grey,
-    width: '90%',
+    width: '100%',
   },
   btnview: {
     justifyContent: 'center',

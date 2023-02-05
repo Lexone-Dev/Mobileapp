@@ -10,6 +10,7 @@ import {
   TextInput,
   Dimensions,
   Alert,
+  BackHandler,
 } from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import {apicaller} from '../Components/ApiCaller/Api';
@@ -24,6 +25,7 @@ const Login = ({navigation}) => {
   const [email, setEmail] = React.useState();
   const [password, setPassword] = React.useState();
   const [error, setError] = React.useState('');
+  const [eye, setEye] = React.useState(true);
   const [loader, setLoader] = React.useState(false);
   const emailRegex =
     /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$/i;
@@ -57,6 +59,18 @@ const Login = ({navigation}) => {
         Alert.alert(error.response.data.response.message);
       });
   }
+  useEffect(() => {
+    const backHandler = BackHandler.addEventListener(
+      'hardwareBackPress',
+      backAction,
+    );
+    return () => backHandler.remove();
+  }, []);
+  const backAction = () => {
+    navigation.goBack();
+    return true;
+  };
+
   return (
     <ImageBackground
       style={styles.Image}
@@ -107,8 +121,16 @@ const Login = ({navigation}) => {
               placeholderTextColor={Colors.Grey}
               onChangeText={setPassword}
               value={password}
-              secureTextEntry={true}
+              secureTextEntry={eye}
             />
+            <TouchableOpacity onPress={() => setEye(!eye)}>
+              <Image
+                source={require('../Assets/Image/Eye.png')}
+                height={20}
+                width={20}
+                style={{marginLeft: -20}}
+              />
+            </TouchableOpacity>
           </View>
         </View>
         {error == 'pass' && (

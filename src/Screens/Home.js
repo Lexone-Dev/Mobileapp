@@ -9,6 +9,8 @@ import {
   ImageBackground,
   Dimensions,
   ScrollView,
+  BackHandler,
+  Alert,
 } from 'react-native';
 import Topbar from '../Components/Header/Topbar';
 import Liveauction from '../Components/BoxLayout/LiveAuctionbox';
@@ -24,7 +26,27 @@ const Home = ({navigation}) => {
   const [loadmore, setLoadmore] = useState(8);
 
   const [isLoading, setIsLoading] = useState(false);
-
+  let screens = 'Login';
+  useEffect(() => {
+    const backHandler = BackHandler.addEventListener(
+      'hardwareBackPress',
+      backAction,
+    );
+    return () => backHandler.remove();
+  }, []);
+  const backAction = () => {
+    if (screens == 'Login') {
+      Alert.alert('Hold on!', 'Are you sure you want to close the app?', [
+        {
+          text: 'Cancel',
+          onPress: () => null,
+          style: 'cancel',
+        },
+        {text: 'YES', onPress: () => BackHandler.exitApp()},
+      ]);
+    }
+    return true;
+  };
   useEffect(() => {
     getAllHomeData();
   }, []);

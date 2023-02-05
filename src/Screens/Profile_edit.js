@@ -1,4 +1,4 @@
-import React, {useCallback, useContext, useState} from 'react';
+import React, {useCallback, useContext, useState, useEffect} from 'react';
 import {
   SafeAreaView,
   View,
@@ -13,6 +13,7 @@ import {
   Modal,
   Alert,
   Button,
+  BackHandler,
 } from 'react-native';
 import SmallBtn from '../Components/Button/SmallBtn';
 import {Colors} from '../Theme/Color';
@@ -151,6 +152,18 @@ const Profile_edit = ({navigation}) => {
         console.log('err in Get user profile is ', err);
       });
   };
+  useEffect(() => {
+    const backHandler = BackHandler.addEventListener(
+      'hardwareBackPress',
+      backAction,
+    );
+    return () => backHandler.remove();
+  }, []);
+  const backAction = () => {
+    navigation.goBack();
+    return true;
+  };
+
   return (
     <ImageBackground
       style={styles.Image}
@@ -273,11 +286,6 @@ const Profile_edit = ({navigation}) => {
                 value={panCard}
               />
             </View>
-            {!regex.test(panCard) && (
-              <Text style={{color: 'red', alignSelf: 'flex-end'}}>
-                ** Invalid card number
-              </Text>
-            )}
           </View>
           <View style={styles.inputview}>
             <Text style={styles.title}>Company Name</Text>

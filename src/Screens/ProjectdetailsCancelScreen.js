@@ -11,6 +11,7 @@ import {
   Dimensions,
   ScrollView,
   Modal,
+  BackHandler,
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import Bidlist from '../Components/BoxLayout/BidList';
@@ -24,6 +25,18 @@ import {Colors} from '../Theme/Color';
 const ProjectdetailsCancel = ({navigation}) => {
   const [more, setMore] = useState(2);
   const [modalshow, setModalshow] = useState(false);
+  useEffect(() => {
+    const backHandler = BackHandler.addEventListener(
+      'hardwareBackPress',
+      backAction,
+    );
+    return () => backHandler.remove();
+  }, []);
+  const backAction = () => {
+    navigation.goBack();
+    return true;
+  };
+
   return (
     <ImageBackground
       style={styles.Image}

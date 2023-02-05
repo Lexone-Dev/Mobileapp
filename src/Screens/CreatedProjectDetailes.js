@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   SafeAreaView,
   View,
@@ -11,6 +11,7 @@ import {
   Dimensions,
   ScrollView,
   Modal,
+  BackHandler,
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import Backbtn from '../Components/Button/Backbtn';
@@ -20,6 +21,18 @@ const CreatedProjectDetailes = ({navigation, route}) => {
   const data = route.params.e;
   const [more, setMore] = useState(2);
   const [modalshow, setModalshow] = useState(false);
+  useEffect(() => {
+    const backHandler = BackHandler.addEventListener(
+      'hardwareBackPress',
+      backAction,
+    );
+    return () => backHandler.remove();
+  }, []);
+  const backAction = () => {
+    navigation.goBack();
+    return true;
+  };
+
   return (
     <ImageBackground
       style={styles.Image}

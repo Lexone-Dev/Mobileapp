@@ -8,6 +8,7 @@ import {
   ImageBackground,
   Dimensions,
   Image,
+  BackHandler,
 } from 'react-native';
 import Backbtn from '../Components/Button/Backbtn';
 import SmallBtn from '../Components/Button/SmallBtn';
@@ -30,6 +31,17 @@ const Otp = () => {
     setRfr(!rfr);
   }
   console.log(arr.length);
+  useEffect(() => {
+    const backHandler = BackHandler.addEventListener(
+      'hardwareBackPress',
+      backAction,
+    );
+    return () => backHandler.remove();
+  }, []);
+  const backAction = () => {
+    navigation.goBack();
+    return true;
+  };
 
   return (
     <ImageBackground

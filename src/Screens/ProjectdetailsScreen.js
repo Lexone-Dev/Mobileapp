@@ -12,6 +12,8 @@ import {
   ScrollView,
   Modal,
   PermissionsAndroid,
+  BackHandler,
+  Alert,
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import Bidlist from '../Components/BoxLayout/BidList';
@@ -36,7 +38,18 @@ const Projectdetails = ({navigation, route}) => {
     minutes: 0,
     seconds: 0,
   });
-
+  let screens = 'Login';
+  useEffect(() => {
+    const backHandler = BackHandler.addEventListener(
+      'hardwareBackPress',
+      backAction,
+    );
+    return () => backHandler.remove();
+  }, []);
+  const backAction = () => {
+    navigation.goBack();
+    return true;
+  };
   useEffect(() => {
     setInterval(() => setNewTime(), 1000);
   }, []);
@@ -134,6 +147,7 @@ const Projectdetails = ({navigation, route}) => {
       }
     }
   };
+
   return (
     <ImageBackground
       style={styles.Image}

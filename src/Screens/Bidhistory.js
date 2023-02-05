@@ -10,6 +10,7 @@ import {
   TextInput,
   Dimensions,
   ScrollView,
+  BackHandler,
 } from 'react-native';
 import {useSelector} from 'react-redux';
 import {apicaller} from '../Components/ApiCaller/Api';
@@ -39,6 +40,18 @@ const Bidhistory = ({navigation}) => {
         console.log(e);
       });
   };
+  useEffect(() => {
+    const backHandler = BackHandler.addEventListener(
+      'hardwareBackPress',
+      backAction,
+    );
+    return () => backHandler.remove();
+  }, []);
+  const backAction = () => {
+    navigation.goBack();
+    return true;
+  };
+
   return (
     <ImageBackground
       style={styles.Image}

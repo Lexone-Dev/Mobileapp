@@ -9,6 +9,7 @@ import {
   ImageBackground,
   TextInput,
   Dimensions,
+  BackHandler,
 } from 'react-native';
 import {apicaller} from '../Components/ApiCaller/Api';
 import SmallBtn from '../Components/Button/SmallBtn';
@@ -58,6 +59,19 @@ const Confirmpsw = ({navigation, route}) => {
     }
   }
   console.log('err = ', error);
+
+  useEffect(() => {
+    const backHandler = BackHandler.addEventListener(
+      'hardwareBackPress',
+      backAction,
+    );
+    return () => backHandler.remove();
+  }, []);
+  const backAction = () => {
+    navigation.goBack();
+    return true;
+  };
+
   return (
     <ImageBackground
       style={styles.Image}

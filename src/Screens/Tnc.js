@@ -7,6 +7,7 @@ import {
   ScrollView,
   ImageBackground,
   Dimensions,
+  BackHandler,
 } from 'react-native';
 import Backbtn from '../Components/Button/Backbtn';
 import {Colors} from '../Theme/Color';
@@ -24,6 +25,17 @@ const Tnc = () => {
         console.log(error.response.data);
       });
   }, []);
+  useEffect(() => {
+    const backHandler = BackHandler.addEventListener(
+      'hardwareBackPress',
+      backAction,
+    );
+    return () => backHandler.remove();
+  }, []);
+  const backAction = () => {
+    navigation.goBack();
+    return true;
+  };
 
   return (
     <ImageBackground
