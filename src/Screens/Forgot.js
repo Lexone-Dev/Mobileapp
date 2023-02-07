@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   SafeAreaView,
   View,
@@ -18,6 +18,8 @@ import {Colors} from '../Theme/Color';
 import axios from 'axios';
 import Loader from '../Components/Header/Loader';
 const Forgot = ({navigation}) => {
+  const emailRegex =
+    /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$/i;
   const [email, setEmail] = useState('');
   var data = JSON.stringify({
     email: email,
@@ -74,13 +76,21 @@ const Forgot = ({navigation}) => {
               onChangeText={setEmail}
             />
           </View>
+          {!emailRegex.test(email) && (
+            <Text style={{color: Colors.Red, alignSelf: 'flex-end'}}>
+              ** Invalid Email ID
+            </Text>
+          )}
         </View>
 
         <View style={styles.btnview}>
           <TouchableOpacity
-            disabled={email ? false : true}
+            disabled={emailRegex.test(email) ? false : true}
             onPress={() => reset()}>
-            <SmallBtn disable={email ? false : true} title="Send OTP" />
+            <SmallBtn
+              disable={emailRegex.test(email) ? false : true}
+              title="Send OTP"
+            />
           </TouchableOpacity>
         </View>
       </SafeAreaView>

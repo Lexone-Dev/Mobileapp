@@ -39,7 +39,7 @@ const CreatedProjectDetailes = ({navigation, route}) => {
       source={require('../Assets/Image/BackgroundImage.png')}
       resizeMode="cover">
       <Backbtn />
-      <ScrollView>
+      <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.Box1}>
           <Image source={{uri: data.image}} style={styles.img1} />
         </View>
@@ -271,8 +271,8 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     justifyContent: 'center',
     alignItems: 'center',
-    paddingHorizontal: 20,
-    paddingVertical: 15,
+    height: 70,
+    width: Dimensions.get('window').width / 2.3,
   },
   Head: {
     color: '#44C1F2',

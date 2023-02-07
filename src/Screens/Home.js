@@ -87,7 +87,7 @@ const Home = ({navigation}) => {
       style={styles.Image}
       source={require('../Assets/Image/BackgroundImage.png')}
       resizeMode="cover">
-      <ScrollView style={styles.container}>
+      <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
         <View style={styles.Topbarview}>
           <Topbar />
         </View>
@@ -101,7 +101,7 @@ const Home = ({navigation}) => {
           <Text style={styles.heading}>Live Auction</Text>
         </View>
 
-        <ScrollView horizontal={true} style={{marginLeft: 20}}>
+        <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
           {liveDetail?.slice(0, loadmore)?.map((item, i) => (
             <Liveauction
               bidLastDate={item?.endDate}
@@ -119,8 +119,9 @@ const Home = ({navigation}) => {
         </ScrollView>
 
         <ScrollView
+          showsHorizontalScrollIndicator={false}
           horizontal={true}
-          style={{marginVertical: 30, marginLeft: 20}}>
+          style={{marginVertical: 30}}>
           {advlexoneBanner.map(item => {
             return (
               <LinearGradient
@@ -130,31 +131,14 @@ const Home = ({navigation}) => {
               </LinearGradient>
             );
           })}
-          {/* <LinearGradient style={styles.img2} colors={['#fffcfc', '#6C7C87']}>
-            <Image
-              source={require('../Assets/Image/Banner.png')}
-              style={styles.img1}
-            />
-            <Text
-              style={{
-                position: 'absolute',
-                color: Colors.White,
-                fontFamily: 'Poppins-Bold',
-                fontSize: 20,
-                width: 300,
-                textAlign: 'center',
-                left: 20,
-              }}>
-              An auction without a bid is no auction at all
-            </Text>
-          </LinearGradient> */}
         </ScrollView>
         <View style={{marginHorizontal: 20}}>
           <Text style={styles.heading1}>Upcoming Auction</Text>
         </View>
         <ScrollView
+          showsHorizontalScrollIndicator={false}
           horizontal={true}
-          style={{marginVertical: 20, marginLeft: 20}}>
+          style={{marginVertical: 20}}>
           {upcoming?.slice(0, loadmore)?.map((item, i) => (
             // console.log('item',item),
             <Upcomingbox
@@ -219,7 +203,8 @@ const styles = StyleSheet.create({
     width: Dimensions.get('window').width - 50,
     alignSelf: 'center',
     justifyContent: 'center',
-    marginRight: 10,
+    marginHorizontal: 20,
+    marginRight: -10,
     borderRadius: 20,
   },
 });

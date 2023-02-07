@@ -179,7 +179,8 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(255, 255, 255, 0.07)',
     width: Dimensions.get('window').width / 1.3,
     height: 370,
-    marginRight: 12,
+    marginLeft: 20,
+    marginRight: -8,
   },
   Box3: {
     padding: 10,

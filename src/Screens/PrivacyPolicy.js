@@ -56,7 +56,7 @@ const PrivacyPolicy = () => {
           </Text>
         </View>
         <View style={styles.btn1}>
-          <ScrollView>
+          <ScrollView showsVerticalScrollIndicator={false}>
             <Text style={styles.infotxt}>{data.description}</Text>
           </ScrollView>
         </View>

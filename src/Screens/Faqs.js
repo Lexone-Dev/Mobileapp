@@ -56,7 +56,7 @@ const Faqs = () => {
             Faqs
           </Text>
         </View>
-        <ScrollView>
+        <ScrollView showsVerticalScrollIndicator={false}>
           {data.map(item => {
             return (
               <>

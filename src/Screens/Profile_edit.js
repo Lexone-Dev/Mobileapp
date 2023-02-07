@@ -31,6 +31,7 @@ import NativeUploady, {
 import {useDispatch, useSelector} from 'react-redux';
 import {getToken, getUser, setUser} from '../Redux/slices/userSlice';
 import Backbtn from '../Components/Button/Backbtn';
+import Loader from '../Components/Header/Loader';
 const Profile_edit = ({navigation}) => {
   const user = useSelector(getUser);
   const [proimg, setProimg] = useState();
@@ -41,6 +42,7 @@ const Profile_edit = ({navigation}) => {
   const [designation, setDesiganation] = React.useState(user?.designation);
   const [panCard, setPancard] = React.useState(user?.panCard);
   const [companyName, setCompanyname] = React.useState(user?.companyName);
+  const [loader, setLoader] = React.useState(false);
   const Token = useSelector(getToken);
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
   var regName = /^[a-zA-Z]+$/;
@@ -112,6 +114,7 @@ const Profile_edit = ({navigation}) => {
   };
 
   const updateUser = async () => {
+    setLoader(true);
     const data = {
       firstName: firstName,
       lastName: lastName,
@@ -136,19 +139,23 @@ const Profile_edit = ({navigation}) => {
       })
       .catch(error => {
         console.log('error while profile updation is ', error);
+        setLoader(false);
       });
   };
 
   const dispatch = useDispatch();
 
   const getAllProfileDatasOfAuser = async () => {
+    setLoader(true);
     await apicaller(`user/get/${user._id}`, null, 'GET', Token, null)
       .then(res => {
         console.log(res?.data?.result);
         dispatch(setUser(res?.data?.result));
         navigation.navigate('Profile');
+        setLoader(false);
       })
       .catch(err => {
+        setLoader(false);
         console.log('err in Get user profile is ', err);
       });
   };
@@ -169,6 +176,7 @@ const Profile_edit = ({navigation}) => {
       style={styles.Image}
       source={require('../Assets/Image/BackgroundImage.png')}
       resizeMode="cover">
+      {loader && <Loader />}
       <SafeAreaView style={styles.container}>
         <View style={styles.header}>
           <Backbtn />
@@ -176,7 +184,9 @@ const Profile_edit = ({navigation}) => {
         {/* <NativeUploady destination={{url: 'https://my-server.test.com/upload'}}>
           <Upload />
         </NativeUploady> */}
-        <ScrollView style={{paddingVertical: 50}}>
+        <ScrollView
+          style={{paddingVertical: 50}}
+          showsVerticalScrollIndicator={false}>
           {/* <View style={styles.name_view}>
             <View
               style={{
@@ -301,10 +311,8 @@ const Profile_edit = ({navigation}) => {
           </View>
 
           <View style={styles.btnview}>
-            <TouchableOpacity
-              disabled={!regex.test(panCard)}
-              onPress={() => updateUser()}>
-              <SmallBtn disable={!regex.test(panCard)} title="Save" />
+            <TouchableOpacity onPress={() => updateUser()}>
+              <SmallBtn title="Save" />
             </TouchableOpacity>
           </View>
         </ScrollView>
@@ -450,6 +458,7 @@ const styles = StyleSheet.create({
     fontFamily: 'Poppins-Regular',
     fontSize: 13,
     color: Colors.Grey,
+    width: '100%',
   },
   btnview: {
     justifyContent: 'center',

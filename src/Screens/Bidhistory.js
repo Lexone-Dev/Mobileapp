@@ -99,7 +99,7 @@ const Bidhistory = ({navigation}) => {
           </Text>
         </TouchableOpacity>
       </View> */}
-      <ScrollView>
+      <ScrollView showsVerticalScrollIndicator={false}>
         {prodata.map(e => {
           return (
             <TouchableOpacity
@@ -158,7 +158,7 @@ const Bidhistory = ({navigation}) => {
                   <Text style={styles.Head}>Auction Ends</Text>
                   <View style={{flexDirection: 'row'}}>
                     <View style={styles.timebox}>
-                      <Text style={styles.time}>{e?.endDate?.slice(0, 2)}</Text>
+                      <Text style={styles.time}>{e?.endDate?.slice(0, 4)}</Text>
                     </View>
                     <Text style={{color: Colors.White, alignSelf: 'center'}}>
                       :
@@ -166,7 +166,7 @@ const Bidhistory = ({navigation}) => {
                     <View style={styles.timebox}>
                       <Text style={styles.time}>
                         {' '}
-                        {e?.endDate?.slice(3, 5)}
+                        {e?.endDate?.slice(5, 7)}
                       </Text>
                     </View>
                     <Text style={{color: Colors.White, alignSelf: 'center'}}>
@@ -175,7 +175,7 @@ const Bidhistory = ({navigation}) => {
                     <View style={styles.timebox}>
                       <Text style={styles.time}>
                         {' '}
-                        {e?.endDate?.slice(6, 10)}
+                        {e?.endDate?.slice(8, 10)}
                       </Text>
                     </View>
                   </View>

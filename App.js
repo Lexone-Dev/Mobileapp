@@ -36,6 +36,9 @@ const App = () => {
             activeTintColor: '#e91e63',
             itemStyle: {marginVertical: 5},
           }}
+          screenOptions={{
+            swipeEnabled: false,
+          }}
           drawerContent={props => <CustomSidebarMenu {...props} />}>
           <Drawer.Screen
             name="All"

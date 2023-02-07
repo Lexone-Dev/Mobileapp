@@ -1,4 +1,4 @@
-import React, {useCallback, useContext, useState} from 'react';
+import React, {useCallback, useContext, useState, useEffect} from 'react';
 import {
   SafeAreaView,
   View,
@@ -40,6 +40,7 @@ const CreateProject = ({navigation}) => {
   const Token = useSelector(getToken);
   const user = useSelector(getUser);
   const [Name, setName] = React.useState();
+  const [img, setImg] = React.useState();
   const [BidStartDate, setBidStartDate] = React.useState();
   const [BidEndDate, setBidEndDate] = React.useState();
   const [MinimumBidPrice, setMinimumBidPrice] = React.useState();
@@ -113,7 +114,8 @@ const CreateProject = ({navigation}) => {
 
             axios(config)
               .then(function (response) {
-                console.log(JSON.stringify(response.data));
+                setImg(response.data.url);
+                console.log('imageup', response.data.url);
               })
               .catch(function (error) {
                 console.log(error);
@@ -150,7 +152,7 @@ const CreateProject = ({navigation}) => {
           type: response.assets[0].type,
           name: response.assets[0].fileName,
         });
-        console.log(data);
+
         var config = {
           method: 'post',
           url: 'https://lexone-backend.onrender.com/api/v1/upload/image',
@@ -164,7 +166,8 @@ const CreateProject = ({navigation}) => {
 
         axios(config)
           .then(function (response) {
-            console.log(JSON.stringify(response.data));
+            setImg(response.data.url);
+            console.log('imageup', response.data.url);
           })
           .catch(function (error) {
             console.log(error);
@@ -180,7 +183,7 @@ const CreateProject = ({navigation}) => {
       startDate: BidStartDate,
       endDate: BidEndDate,
       category: '',
-      image: proimg,
+      image: img,
       price: MinimumBidPrice,
       sheet: '',
       descriptions: Auctiondescription,
@@ -248,7 +251,7 @@ const CreateProject = ({navigation}) => {
         <View style={styles.backbutton}>
           <Backbtn />
         </View>
-        <ScrollView>
+        <ScrollView showsVerticalScrollIndicator={false}>
           <View style={styles.inputview}>
             <Text style={styles.title}>Project Name</Text>
             <View style={styles.Subinputview}>
@@ -317,6 +320,8 @@ const CreateProject = ({navigation}) => {
                   placeholderTextColor={Colors.Grey}
                   onChangeText={setBidStartDate}
                   value={BidStartDate}
+                  placeholder="YYYY-MM-DD"
+                  editable={false}
                 />
               </TouchableOpacity>
               {err == 'BidStartDate' && (
@@ -346,6 +351,8 @@ const CreateProject = ({navigation}) => {
                   placeholderTextColor={Colors.Grey}
                   onChangeText={setBidEndDate}
                   value={BidEndDate}
+                  placeholder="YYYY-MM-DD"
+                  editable={false}
                 />
               </TouchableOpacity>
               {err == 'BidEndDate' && (

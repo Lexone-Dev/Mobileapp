@@ -58,7 +58,7 @@ const AboutUs = () => {
             About Us
           </Text>
         </View>
-        <ScrollView>
+        <ScrollView showsVerticalScrollIndicator={false}>
           {data.map(item => {
             return (
               <>

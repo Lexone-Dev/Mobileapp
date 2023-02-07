@@ -1,4 +1,4 @@
-import React, {useCallback, useContext, useState} from 'react';
+import React, {useCallback, useContext, useEffect, useState} from 'react';
 import {
   SafeAreaView,
   View,
@@ -243,7 +243,7 @@ const Information = ({navigation, route}) => {
                 }}>
                 <CountryPicker
                   show={show}
-                  initialState={'+1'}
+                  initialState={'+'}
                   // when picker button press you will get the country object with dial code
                   pickerButtonOnPress={item => {
                     console.log(item);
